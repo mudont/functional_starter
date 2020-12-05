@@ -1,0 +1,31 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "servantproj:lib"
+
+    - path: "./app/seldaEg.hs"
+      component: "servantproj:exe:seldaEg-exe"
+
+    - path: "./src/seldaEg.hs"
+      component: "servantproj:exe:seldaEg-exe"
+
+    - path: "./app/Paths_servantproj.hs"
+      component: "servantproj:exe:seldaEg-exe"
+
+    - path: "./src/Paths_servantproj.hs"
+      component: "servantproj:exe:seldaEg-exe"
+
+    - path: "./app/Main.hs"
+      component: "servantproj:exe:servantproj-exe"
+
+    - path: "./src/Main.hs"
+      component: "servantproj:exe:servantproj-exe"
+
+    - path: "./app/Paths_servantproj.hs"
+      component: "servantproj:exe:servantproj-exe"
+
+    - path: "./src/Paths_servantproj.hs"
+      component: "servantproj:exe:servantproj-exe"
+
+    - path: "./test"
+      component: "servantproj:test:servantproj-test"
