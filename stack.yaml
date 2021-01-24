@@ -18,7 +18,7 @@
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
 resolver:
-  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/24.yaml
+  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/11.yaml
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -44,6 +44,7 @@ extra-deps:
   - selda-postgresql-0.1.8.1@sha256:66c225d6dcd3edd302c45db0191c004f143cab02b5b6e382bc5b4bae7d5a1483,1418
   - selda-sqlite-0.1.7.1@sha256:d750cb189dfd5049628cd1dd0a5d7abda95bdac4a451e0973fc9fde80e70ed17,1257
   - direct-sqlite-2.3.26@sha256:04e835402f1508abca383182023e4e2b9b86297b8533afbd4e57d1a5652e0c23,3718
+  - logger-0.1.0.2@sha256:38e86448cbd8abea17af2ce39a99886e7e4f4afc2c64a5bd34a93adc95c18949,2785
 # Override default flag values for local packages and extra-deps
 # flags: {}
 
@@ -67,3 +68,4 @@ extra-deps:
 #
 # Allow a newer minor version of GHC than the snapshot specifies
 # compiler-check: newer-minor
+allow-newer: true

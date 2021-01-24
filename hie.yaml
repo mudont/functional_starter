@@ -1,31 +1,205 @@
 cradle:
   stack:
     - path: "./src"
-      component: "servantproj:lib"
+      component: "functional-starter:lib"
 
-    - path: "./app/seldaEg.hs"
-      component: "servantproj:exe:seldaEg-exe"
-
-    - path: "./src/seldaEg.hs"
-      component: "servantproj:exe:seldaEg-exe"
-
-    - path: "./app/Paths_servantproj.hs"
-      component: "servantproj:exe:seldaEg-exe"
-
-    - path: "./src/Paths_servantproj.hs"
-      component: "servantproj:exe:seldaEg-exe"
-
-    - path: "./app/Main.hs"
-      component: "servantproj:exe:servantproj-exe"
+    - path: "./server/Main.hs"
+      component: "functional-starter:exe:functional-starter-exe"
 
     - path: "./src/Main.hs"
-      component: "servantproj:exe:servantproj-exe"
+      component: "functional-starter:exe:functional-starter-exe"
 
-    - path: "./app/Paths_servantproj.hs"
-      component: "servantproj:exe:servantproj-exe"
+    - path: "./server/API.hs"
+      component: "functional-starter:exe:functional-starter-exe"
 
-    - path: "./src/Paths_servantproj.hs"
-      component: "servantproj:exe:servantproj-exe"
+    - path: "./server/CmdArgs.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./server/Config.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./server/Models.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./server/Queries.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./server/ServantWiring.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./server/Paths_functional_starter.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:functional-starter-exe"
+
+    - path: "./mongotest/example.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/example.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/API.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/CmdArgs.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/Config.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/Models.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/Queries.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/ServantWiring.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/Paths_functional_starter.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:mongoEg-exe"
+
+    - path: "./mongotest/oplogtest.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/oplogtest.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./mongotest/API.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./mongotest/CmdArgs.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./mongotest/Config.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./mongotest/Models.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./mongotest/Queries.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./mongotest/ServantWiring.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./mongotest/Paths_functional_starter.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:oplog-exe"
+
+    - path: "./schema/Main.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/Main.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./schema/API.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./schema/CmdArgs.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./schema/Config.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./schema/Models.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./schema/Queries.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./schema/ServantWiring.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./schema/Paths_functional_starter.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:schema-exe"
+
+    - path: "./oneOff/ticTacToe.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/Paths_functional_starter.hs"
+      component: "functional-starter:exe:tictactoe"
 
     - path: "./test"
-      component: "servantproj:test:servantproj-test"
+      component: "functional-starter:test:functional-starter-test"

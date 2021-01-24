@@ -19,7 +19,7 @@ import Control.Monad.Trans.Except
 import Control.Natural
 import Data.Aeson (defaultOptions)
 import Data.Aeson.TH (deriveJSON)
-import Database.Selda
+import Database.Selda hiding (Group)
 import Database.Selda.Backend (SeldaConnection, runSeldaT)
 import Database.Selda.PostgreSQL
 import Database.Selda.SqlType (toId)
@@ -39,15 +39,21 @@ api = Proxy
 
 server :: SeldaConnection a -> Server API
 server conn =
-  marks conn
-    :<|> handlers conn
+  people conn
+    :<|> groups conn
     :<|> serveDirectoryWebApp "."
 
-marks :: SeldaConnection a -> Servant.Handler [Mark]
-marks conn = dbQuery conn activeMarks
+{-
+For an idiomatic way to avoid boilerplate of dbQuery prefix in each
+API handler function below, see
+https://www.servant.dev/posts/2017-03-03-servant-and-db.html
+It shows how to create a Monad in a transformer stack and use hoistServer
+-}
+people :: SeldaConnection a -> Servant.Handler [Person]
+people conn = dbQuery conn allPeople
 
-handlers :: SeldaConnection a -> Servant.Handler [Models.Handler]
-handlers conn = dbQuery conn allHandlers
+groups :: SeldaConnection a -> Servant.Handler [Group]
+groups conn = dbQuery conn allGroups
 
 dbQuery :: SqlRow b => SeldaConnection a -> Query a (Row a b) -> Servant.Handler [b]
 dbQuery conn q =

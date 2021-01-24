@@ -7,6 +7,6 @@ import Models
 import Servant (Get, JSON, Raw, type (:<|>), type (:>))
 
 type API =
-  "marks" :> Get '[JSON] [Mark]
-    :<|> "handlers" :> Get '[JSON] [Handler]
+  "people" :> Get '[JSON] [Person]
+    :<|> "groups" :> Get '[JSON] [Group]
     :<|> "static" :> Raw

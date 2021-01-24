@@ -25,10 +25,17 @@ packages:
       sha256: 11874ab21e10c5b54cd1e02a037b677dc1e2ee9986f38c599612c56654dc01c3
   original:
     hackage: direct-sqlite-2.3.26@sha256:04e835402f1508abca383182023e4e2b9b86297b8533afbd4e57d1a5652e0c23,3718
+- completed:
+    hackage: logger-0.1.0.2@sha256:38e86448cbd8abea17af2ce39a99886e7e4f4afc2c64a5bd34a93adc95c18949,2785
+    pantry-tree:
+      size: 1200
+      sha256: cc650cdf30ae3a15c6b653ee21df5b1d5910ab04959b0baaac725cc64bd8b60e
+  original:
+    hackage: logger-0.1.0.2@sha256:38e86448cbd8abea17af2ce39a99886e7e4f4afc2c64a5bd34a93adc95c18949,2785
 snapshots:
 - completed:
-    size: 532835
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/24.yaml
-    sha256: cf2b52420b2262fe9cf0f6744929120131abd6675b1c3fb2d8b155a47f80d103
+    size: 532381
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/11.yaml
+    sha256: 1f43c4ad661a114a4f9dd4580988f30da1208d844c097714f5867c52a02e0aa1
   original:
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/24.yaml
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/11.yaml

@@ -1,10 +1,10 @@
-name: servantproj
+name: functional-starter
 version: 0.1.0.0
-github: "githubuser/servantproj"
+github: "mudont/functional_starter"
 license: BSD3
-author: "Author name here"
-maintainer: "example@example.com"
-copyright: "2020 Author name here"
+author: "mudont"
+maintainer: "maverickone@gmail.com"
+copyright: "2020 mudont"
 
 extra-source-files:
   - README.md
@@ -16,34 +16,39 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description: Please see the README on GitHub at <https://github.com/githubuser/servantproj#readme>
+description: Please see the README on GitHub at <https://github.com/mudont/functional_starter#README>
 
 dependencies:
-  - base >= 4.7 && < 5
   - aeson
-  - servant-server
-  - wai
-  - warp
-  - containers
-  - unordered-containers
-  - vector
-  - time
-  - text
-  - bytestring
-  - aeson
-  - configurator
-  - postgresql-simple
-  - resource-pool
-  - http-types
-  - fast-logger
+  - base >= 4.7 && <= 5.0
   - blaze-html
-  - raw-strings-qq
+  - bytestring
+  - configurator
+  - containers
+  - dhall
   - exceptions
+  - fast-logger
+  - http-types
+  - katip
+  - lens
+  - mongoDB
+  - mtl
+  - natural-transformation
+  - optparse-applicative
+  - postgresql-simple
+  - raw-strings-qq
+  - resource-pool
   - selda
   - selda-postgresql
   - selda-sqlite
-  - natural-transformation
+  - servant-server
+  - text
+  - time
   - transformers
+  - unordered-containers
+  - vector
+  - wai
+  - warp
 
 library:
   source-dirs: src
@@ -52,30 +57,71 @@ library:
     - ServantWiring
     - API
     - Queries
+    - Config
+    - CmdArgs
 
 executables:
-  servantproj-exe:
+  schema-exe:
     main: Main.hs
-    source-dirs: app
+    source-dirs:
+      - schema
+      - src
     ghc-options:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
       - base
-      - servantproj
-  seldaEg-exe:
-    main: Main.hs
-    source-dirs: seldaEg
+
+  oplog-exe:
+    main: oplogtest.hs
+    source-dirs:
+      - mongotest
+      - src
     ghc-options:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
       - base
-      - servantproj
+
+  tictactoe:
+    main: ticTacToe.hs
+    source-dirs:
+      - oneOff
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - base
+
+  mongoEg-exe:
+    main: example.hs
+    source-dirs:
+      - mongotest
+      - src
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - base
+
+  functional-starter-exe:
+    main: Main.hs
+    source-dirs:
+      - server
+      - src
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - base
+
 tests:
-  servantproj-test:
+  functional-starter-test:
     main: Spec.hs
     source-dirs: test
     ghc-options:
@@ -84,7 +130,7 @@ tests:
       - -with-rtsopts=-N
     dependencies:
       - base
-      - servantproj
+      - functional-starter
       - hspec
       - hspec-wai
       - hspec-wai-json
