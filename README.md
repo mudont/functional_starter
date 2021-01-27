@@ -1,26 +1,12 @@
-# Web server and client for my sites
+# Haskell playground
 
-## "Business" Feature wishlist
+This is a Playground for various functionality imlemented in Haskell (and maybe other functional languages like Elm)
 
-- Betting/Trading exchange
-- Tennis
-    * club page
-    * matches/leagues
-    * scheduling winter contracts
-- Cricket
-## Infrastructural features
+Authentication, REST servers, websockets, Web SPA/PWA clients, Postgres, Mongo (with oplog tailing)
 
-- [ ] [optparse-generic](https://hackage.haskell.org/package/optparse-generic-1.4.4/docs/Options-Generic.html)
-- [ ] Logging
-- [ ] [Lucid for HTML](https://hackage.haskell.org/package/lucid)
-- [x] Configuration (Dhall)
-- [ ] Websockets
-- [ ] OpenID Connect
 
-      ~/proj/hs/servant-oidc
-      This just authenticates
-      Needs to set cookies/JWT and use that in subsequent
-      requests to check identity
+
+## [TODO](TODO.md)
 
 
 ## Tech stack

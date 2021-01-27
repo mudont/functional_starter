@@ -1,3 +1,6 @@
+#!/usr/bin/env stack
+-- stack script --resolver lts-17.0
+
 {-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE OverloadedStrings #-}
 

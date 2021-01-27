@@ -1,7 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
+#!/usr/bin/env stack
+-- stack script --resolver lts-17.0
 
--- #!/usr/bin/env stack
--- stack script --resolver lts-16.11
+{-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
