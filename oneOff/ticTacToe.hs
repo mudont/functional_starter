@@ -40,10 +40,7 @@ printRow [a, b, c] =
   putStrLn $ showMark a <> showMark b <> showMark c
 
 ppTT :: Board -> IO ()
-ppTT [r1, r2, r3] = do
-  printRow r1
-  printRow r2
-  printRow r3
+ppTT = mapM_ printRow
 
 isEmpty :: Int -> Int -> TTTState -> Bool
 isEmpty r c st =
@@ -71,8 +68,8 @@ flipTurn t =
 n :: Int
 n = 3
 
-getWinSeqs :: Board -> [Row]
-getWinSeqs b =
+getTTTSeqs :: Board -> [Row]
+getTTTSeqs b =
   rows ++ cols ++ mainDiag ++ otherDiag
   where
     rows = b
@@ -80,19 +77,17 @@ getWinSeqs b =
     mainDiag = [zipWith (!!) b [0 ..]]
     otherDiag = [zipWith (!!) b [n - 1, n - 2 ..]]
 
-getRowWinner :: Row -> Maybe Mark
-getRowWinner [a, b, c] =
+getMaybeRowWinner :: Row -> Maybe Mark
+getMaybeRowWinner [a, b, c] =
   if a == b && b == c && isJust a
     then a
     else Nothing
 
-finished :: Board -> IO Bool
-finished b = do
-  case find isJust $ map getRowWinner (getWinSeqs b) of
-    Just (Just x) -> do
-      print $ show x <> " Won"
-      return True
-    _ -> return False
+getMaybeWinner :: Board -> Maybe Mark
+getMaybeWinner b =
+  case find isJust $ map getMaybeRowWinner (getTTTSeqs b) of
+    Just (Just x) -> Just x
+    _ -> Nothing
 
 play :: StateT TTTState IO ()
 play = do
@@ -107,12 +102,14 @@ play = do
         put st2
 
         liftIO $ ppTT $ st2 ^. board
-        gameOver <- lift $ finished (st2 ^. board)
-        unless gameOver loop
+        let maybeWinner = getMaybeWinner $ st2 ^. board
+        case maybeWinner of
+          Nothing -> loop
+          Just m -> liftIO $ print $ show m <> " won!"
   loop
 
 main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
-  (_, st) <- runStateT play $ TTTState emptyBoard X
+  runStateT play $ TTTState emptyBoard X
   putStrLn "Game Over!"
