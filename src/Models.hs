@@ -7,6 +7,7 @@
 
 module Models where
 
+import ClassyPrelude
 import Data.Aeson (defaultOptions)
 import Data.Aeson.TH (deriveJSON)
 -- import Data.Fixed (Pico)

@@ -4,6 +4,7 @@
 
 module Config where
 
+import ClassyPrelude
 import Dhall
 ---------------------------------------
 import Models

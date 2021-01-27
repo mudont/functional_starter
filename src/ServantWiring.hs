@@ -12,6 +12,7 @@ module ServantWiring where
 -- )
 
 import API
+import ClassyPrelude (IO, Int, MonadIO (liftIO), ($), (.))
 import Control.Exception
 import Control.Monad.Catch
 import Control.Monad.IO.Class

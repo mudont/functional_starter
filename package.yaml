@@ -4,54 +4,91 @@ github: "mudont/functional_starter"
 license: BSD3
 author: "mudont"
 maintainer: "maverickone@gmail.com"
-copyright: "2020 mudont"
+copyright: "2021 mudont"
 
 extra-source-files:
   - README.md
 
-# Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
+synopsis: Functional Kitchen Sink
+category: Web
 
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
 description: Please see the README on GitHub at <https://github.com/mudont/functional_starter#README>
+default-extensions:
+  - NoImplicitPrelude
+  - OverloadedStrings
+  - TemplateHaskell
+  - DataKinds
+  - DeriveGeneric
+  - FlexibleContexts
+  - FlexibleInstances
+  - MultiParamTypeClasses
+  - GeneralizedNewtypeDeriving
+  - TypeOperators
+  - TypeFamilies
+  - ConstraintKinds
 
-dependencies:
-  - aeson
-  - base >= 4.7 && <= 5.0
-  - blaze-html
-  - bytestring
-  - configurator
-  - containers
-  - dhall
-  - exceptions
-  - fast-logger
-  - http-types
-  - katip
-  - lens
-  - mongoDB
-  - mtl
-  - natural-transformation
-  - optparse-applicative
-  - postgresql-simple
-  - raw-strings-qq
-  - resource-pool
-  - selda
-  - selda-postgresql
-  - selda-sqlite
-  - servant-server
-  - text
-  - time
-  - transformers
-  - unordered-containers
-  - vector
-  - wai
-  - warp
+_exe-defs: &exe-defaults
+  source-dirs:
+    - app
+    - src
+    - oneOff
+  ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+  dependencies:
+    - aeson
+    - base >= 4.7 && <= 5.0
+    - blaze-html
+    - bytestring
+    - case-insensitive
+    - classy-prelude
+    - conduit
+    - configurator
+    - containers
+    - data-has
+    - dhall
+    - exceptions
+    - fast-logger
+    - ghc-prim
+    - http-types
+    - jose
+    - katip
+    - lens
+    - mongoDB
+    - mtl
+    - natural-transformation
+    - network
+    - optparse-applicative
+    - postgresql-simple
+    - raw-strings-qq
+    - resource-pool
+    - selda
+    - selda-postgresql
+    - selda-sqlite
+    - servant
+    - servant-auth
+    - servant-auth-server
+    - servant-server
+    - servant-websockets
+    - split
+    - stm
+    - streamly
+    - text
+    - threads
+    - time
+    - transformers
+    - unordered-containers
+    - uuid
+    - vector
+    - wai
+    - wai-cors
+    - wai-logger
+    - warp
+    - websockets
 
 library:
-  source-dirs: src
+  <<: *exe-defaults
   exposed-modules:
     - Models
     - ServantWiring
@@ -61,77 +98,35 @@ library:
     - CmdArgs
 
 executables:
-  schema-exe:
+  server:
+    <<: *exe-defaults
     main: Main.hs
-    source-dirs:
-      - schema
-      - src
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-    dependencies:
-      - base
 
-  oplog-exe:
-    main: oplogtest.hs
-    source-dirs:
-      - mongotest
-      - src
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-    dependencies:
-      - base
+  schema:
+    <<: *exe-defaults
+    main: schema.hs
 
-  tictactoe:
-    main: ticTacToe.hs
-    source-dirs:
-      - oneOff
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-    dependencies:
-      - base
+  # oplog:
+  #   <<: *exe-defaults
+  #   main: oplogtest.hs
 
-  mongoEg-exe:
+  # tictactoe:
+  #   <<: *exe-defaults
+  #   main: ticTacToe.hs
+
+  mongoEg:
+    <<: *exe-defaults
     main: example.hs
-    source-dirs:
-      - mongotest
-      - src
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-    dependencies:
-      - base
 
-  functional-starter-exe:
-    main: Main.hs
-    source-dirs:
-      - server
-      - src
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-    dependencies:
-      - base
-
+  # cond1:
+  #   <<: *exe-defaults
+  #   main: example.hs
 tests:
   functional-starter-test:
+    <<: *exe-defaults
     main: Spec.hs
-    source-dirs: test
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
     dependencies:
-      - base
       - functional-starter
       - hspec
       - hspec-wai
       - hspec-wai-json
-      - aeson

@@ -4,16 +4,18 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cff614f0527a13c28c5e73ee58553b04a8c33def9b65ab4cdc6dff23e80c1984
+-- hash: 408f84fbc47cb800d97c48b113277f82cf8192247e4fe5ffb481e0bf73482c7a
 
 name:           functional-starter
 version:        0.1.0.0
+synopsis:       Functional Kitchen Sink
 description:    Please see the README on GitHub at <https://github.com/mudont/functional_starter#README>
+category:       Web
 homepage:       https://github.com/mudont/functional_starter#readme
 bug-reports:    https://github.com/mudont/functional_starter/issues
 author:         mudont
 maintainer:     maverickone@gmail.com
-copyright:      2020 mudont
+copyright:      2021 mudont
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -33,25 +35,40 @@ library
       Config
       CmdArgs
   other-modules:
+      Main
+      MyMonads.Reader
+      MyMonads.State
+      MyMonads.Writer
       Paths_functional_starter
   hs-source-dirs:
+      app
       src
+      oneOff
+  default-extensions: NoImplicitPrelude OverloadedStrings TemplateHaskell DataKinds DeriveGeneric FlexibleContexts FlexibleInstances MultiParamTypeClasses GeneralizedNewtypeDeriving TypeOperators TypeFamilies ConstraintKinds
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
     , base >=4.7 && <=5.0
     , blaze-html
     , bytestring
+    , case-insensitive
+    , classy-prelude
+    , conduit
     , configurator
     , containers
+    , data-has
     , dhall
     , exceptions
     , fast-logger
+    , ghc-prim
     , http-types
+    , jose
     , katip
     , lens
     , mongoDB
     , mtl
     , natural-transformation
+    , network
     , optparse-applicative
     , postgresql-simple
     , raw-strings-qq
@@ -59,93 +76,71 @@ library
     , selda
     , selda-postgresql
     , selda-sqlite
+    , servant
+    , servant-auth
+    , servant-auth-server
     , servant-server
+    , servant-websockets
+    , split
+    , stm
+    , streamly
     , text
+    , threads
     , time
     , transformers
     , unordered-containers
+    , uuid
     , vector
     , wai
+    , wai-cors
+    , wai-logger
     , warp
+    , websockets
   default-language: Haskell2010
 
-executable functional-starter-exe
-  main-is: Main.hs
-  other-modules:
-      API
-      CmdArgs
-      Config
-      Models
-      Queries
-      ServantWiring
-      Paths_functional_starter
-  hs-source-dirs:
-      server
-      src
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      aeson
-    , base
-    , blaze-html
-    , bytestring
-    , configurator
-    , containers
-    , dhall
-    , exceptions
-    , fast-logger
-    , http-types
-    , katip
-    , lens
-    , mongoDB
-    , mtl
-    , natural-transformation
-    , optparse-applicative
-    , postgresql-simple
-    , raw-strings-qq
-    , resource-pool
-    , selda
-    , selda-postgresql
-    , selda-sqlite
-    , servant-server
-    , text
-    , time
-    , transformers
-    , unordered-containers
-    , vector
-    , wai
-    , warp
-  default-language: Haskell2010
-
-executable mongoEg-exe
+executable mongoEg
   main-is: example.hs
   other-modules:
+      Main
       API
       CmdArgs
       Config
       Models
       Queries
       ServantWiring
+      MyMonads.Reader
+      MyMonads.State
+      MyMonads.Writer
       Paths_functional_starter
   hs-source-dirs:
-      mongotest
+      app
       src
+      oneOff
+  default-extensions: NoImplicitPrelude OverloadedStrings TemplateHaskell DataKinds DeriveGeneric FlexibleContexts FlexibleInstances MultiParamTypeClasses GeneralizedNewtypeDeriving TypeOperators TypeFamilies ConstraintKinds
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
-    , base
+    , base >=4.7 && <=5.0
     , blaze-html
     , bytestring
+    , case-insensitive
+    , classy-prelude
+    , conduit
     , configurator
     , containers
+    , data-has
     , dhall
     , exceptions
     , fast-logger
+    , ghc-prim
     , http-types
+    , jose
     , katip
     , lens
     , mongoDB
     , mtl
     , natural-transformation
+    , network
     , optparse-applicative
     , postgresql-simple
     , raw-strings-qq
@@ -153,46 +148,71 @@ executable mongoEg-exe
     , selda
     , selda-postgresql
     , selda-sqlite
+    , servant
+    , servant-auth
+    , servant-auth-server
     , servant-server
+    , servant-websockets
+    , split
+    , stm
+    , streamly
     , text
+    , threads
     , time
     , transformers
     , unordered-containers
+    , uuid
     , vector
     , wai
+    , wai-cors
+    , wai-logger
     , warp
+    , websockets
   default-language: Haskell2010
 
-executable oplog-exe
-  main-is: oplogtest.hs
+executable schema
+  main-is: schema.hs
   other-modules:
+      Main
       API
       CmdArgs
       Config
       Models
       Queries
       ServantWiring
+      MyMonads.Reader
+      MyMonads.State
+      MyMonads.Writer
       Paths_functional_starter
   hs-source-dirs:
-      mongotest
+      app
       src
+      oneOff
+  default-extensions: NoImplicitPrelude OverloadedStrings TemplateHaskell DataKinds DeriveGeneric FlexibleContexts FlexibleInstances MultiParamTypeClasses GeneralizedNewtypeDeriving TypeOperators TypeFamilies ConstraintKinds
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
-    , base
+    , base >=4.7 && <=5.0
     , blaze-html
     , bytestring
+    , case-insensitive
+    , classy-prelude
+    , conduit
     , configurator
     , containers
+    , data-has
     , dhall
     , exceptions
     , fast-logger
+    , ghc-prim
     , http-types
+    , jose
     , katip
     , lens
     , mongoDB
     , mtl
     , natural-transformation
+    , network
     , optparse-applicative
     , postgresql-simple
     , raw-strings-qq
@@ -200,17 +220,29 @@ executable oplog-exe
     , selda
     , selda-postgresql
     , selda-sqlite
+    , servant
+    , servant-auth
+    , servant-auth-server
     , servant-server
+    , servant-websockets
+    , split
+    , stm
+    , streamly
     , text
+    , threads
     , time
     , transformers
     , unordered-containers
+    , uuid
     , vector
     , wai
+    , wai-cors
+    , wai-logger
     , warp
+    , websockets
   default-language: Haskell2010
 
-executable schema-exe
+executable server
   main-is: Main.hs
   other-modules:
       API
@@ -219,67 +251,39 @@ executable schema-exe
       Models
       Queries
       ServantWiring
+      MyMonads.Reader
+      MyMonads.State
+      MyMonads.Writer
       Paths_functional_starter
   hs-source-dirs:
-      schema
+      app
       src
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      aeson
-    , base
-    , blaze-html
-    , bytestring
-    , configurator
-    , containers
-    , dhall
-    , exceptions
-    , fast-logger
-    , http-types
-    , katip
-    , lens
-    , mongoDB
-    , mtl
-    , natural-transformation
-    , optparse-applicative
-    , postgresql-simple
-    , raw-strings-qq
-    , resource-pool
-    , selda
-    , selda-postgresql
-    , selda-sqlite
-    , servant-server
-    , text
-    , time
-    , transformers
-    , unordered-containers
-    , vector
-    , wai
-    , warp
-  default-language: Haskell2010
-
-executable tictactoe
-  main-is: ticTacToe.hs
-  other-modules:
-      Paths_functional_starter
-  hs-source-dirs:
       oneOff
+  default-extensions: NoImplicitPrelude OverloadedStrings TemplateHaskell DataKinds DeriveGeneric FlexibleContexts FlexibleInstances MultiParamTypeClasses GeneralizedNewtypeDeriving TypeOperators TypeFamilies ConstraintKinds
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson
-    , base
+    , base >=4.7 && <=5.0
     , blaze-html
     , bytestring
+    , case-insensitive
+    , classy-prelude
+    , conduit
     , configurator
     , containers
+    , data-has
     , dhall
     , exceptions
     , fast-logger
+    , ghc-prim
     , http-types
+    , jose
     , katip
     , lens
     , mongoDB
     , mtl
     , natural-transformation
+    , network
     , optparse-applicative
     , postgresql-simple
     , raw-strings-qq
@@ -287,57 +291,52 @@ executable tictactoe
     , selda
     , selda-postgresql
     , selda-sqlite
+    , servant
+    , servant-auth
+    , servant-auth-server
     , servant-server
+    , servant-websockets
+    , split
+    , stm
+    , streamly
     , text
+    , threads
     , time
     , transformers
     , unordered-containers
+    , uuid
     , vector
     , wai
+    , wai-cors
+    , wai-logger
     , warp
+    , websockets
   default-language: Haskell2010
 
 test-suite functional-starter-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Main
+      API
+      CmdArgs
+      Config
+      Models
+      Queries
+      ServantWiring
+      MyMonads.Reader
+      MyMonads.State
+      MyMonads.Writer
       Paths_functional_starter
   hs-source-dirs:
-      test
+      app
+      src
+      oneOff
+  default-extensions: NoImplicitPrelude OverloadedStrings TemplateHaskell DataKinds DeriveGeneric FlexibleContexts FlexibleInstances MultiParamTypeClasses GeneralizedNewtypeDeriving TypeOperators TypeFamilies ConstraintKinds
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
-    , base
-    , blaze-html
-    , bytestring
-    , configurator
-    , containers
-    , dhall
-    , exceptions
-    , fast-logger
-    , functional-starter
+      functional-starter
     , hspec
     , hspec-wai
     , hspec-wai-json
-    , http-types
-    , katip
-    , lens
-    , mongoDB
-    , mtl
-    , natural-transformation
-    , optparse-applicative
-    , postgresql-simple
-    , raw-strings-qq
-    , resource-pool
-    , selda
-    , selda-postgresql
-    , selda-sqlite
-    , servant-server
-    , text
-    , time
-    , transformers
-    , unordered-containers
-    , vector
-    , wai
-    , warp
   default-language: Haskell2010

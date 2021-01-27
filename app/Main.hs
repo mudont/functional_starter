@@ -3,6 +3,18 @@
 
 module Main where
 
+import ClassyPrelude
+  ( IO,
+    Int,
+    MonadIO (liftIO),
+    Semigroup ((<>)),
+    Show (show),
+    fromIntegral,
+    print,
+    putStrLn,
+    ($),
+    (++),
+  )
 import CmdArgs
 import Config
 import Database.Selda
@@ -25,7 +37,7 @@ main = do
           pgUsername = dbUsername cfg,
           pgPassword = dbPassword cfg
         }
-  putStrLn $ "Starting server on " ++ show pn
+  print $ "Starting server on " <> show pn
   liftIO $ startApp pn conn
   putStrLn "Closing Postgres"
   seldaClose conn

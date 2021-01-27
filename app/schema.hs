@@ -5,7 +5,7 @@
 module Main where
 
 ---------------------------------------
-
+import ClassyPrelude hiding (group)
 import Config
 import Data.Semigroup ((<>))
 import qualified Data.Text as T
@@ -68,7 +68,7 @@ main = do
         Drop -> do
           dropTables connInfo
           putStrLn "Deleted Tables!"
-  putStrLn ("global flag: " ++ show (optGlobalFlag opts))
+  print ("global flag: " ++ show (optGlobalFlag opts))
   where
     optsParser :: ParserInfo Opts
     optsParser =

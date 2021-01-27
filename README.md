@@ -12,13 +12,13 @@ Authentication, REST servers, websockets, Web SPA/PWA clients, Postgres, Mongo (
 ## Tech stack
 - Authentication: OpenId Connect Google/Microsoft
 - Communication : REST + Websockets
-- FRP: streamly seems to be a new lib (Claims to be close to Rx)
+- FRP: streamly seems to be a new lib (Claims to be close to Rx in design)
 - Client options: 
   * Purescript + Halogen + REST+Websocket + Nice default styling
-  * Elm
-  * GHCJS Reflex-DOM
-  * GHCJS Miso (Not FRP)
-  * ReScript
+  * [x?] Elm
+  * [ ] GHCJS Reflex-DOM
+  * [ ] GHCJS Miso (Not FRP)
+  * [ ] ReScript
 - Servant + Selda + Websocket server + Postgres
 - ### [Streamly for FRP](https://hackage.haskell.org/package/streamly)
   Actively maintained, Fastest streaming library, general purpose
@@ -26,8 +26,7 @@ Authentication, REST servers, websockets, Web SPA/PWA clients, Postgres, Mongo (
     [Polysemy](https://github.com/polysemy-research/polysemy) was written by Sandy McGuire,
     author of "Thinking with Types" and "Algebra Driven Design"
 
-    [example Polysemy+Servant](https://github.com/EncodePanda/todo-rest)
-
+    
     [Tutorial](https://haskell-explained.gitlab.io/blog/posts/2019/07/28/polysemy-is-cool-part-1/index.html)
 - ### Other effect systems
   Effects are things like IO, random numbers, exceptions, mutable global state
@@ -41,6 +40,8 @@ Authentication, REST servers, websockets, Web SPA/PWA clients, Postgres, Mongo (
 ## Other useful libraries
 [Artyom's Haskell toolbox](https://toolbox.brick.do//) Lists the author's favorite libraries for various tasks
 
+## Source code to learn from
+- [Xmonad](https://wiki.haskell.org/Xmonad/Guided_tour_of_the_xmonad_source)
 ## Concepts to learn better
 - Type level programming. Read Mcguire book
 -  McGuire also has a book Algebra Driven Design

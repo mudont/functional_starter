@@ -1,3 +1,6 @@
+#!/usr/bin/env stack
+-- stack script --resolver lts-17.0
+
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE RecursiveDo #-}
 {-# LANGUAGE ScopedTypeVariables #-}

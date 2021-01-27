@@ -6,7 +6,7 @@
 module Queries where
 
 -- BEgin paste WilliamYao's selda code
-
+import ClassyPrelude hiding (group)
 import Data.Fixed (Pico)
 import Data.Time
 import Database.Selda hiding (Group)

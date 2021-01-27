@@ -3,203 +3,650 @@ cradle:
     - path: "./src"
       component: "functional-starter:lib"
 
-    - path: "./server/Main.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/Main.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./server/API.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./server/CmdArgs.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./server/Config.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./server/Models.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./server/Queries.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./server/ServantWiring.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./server/Paths_functional_starter.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/API.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/CmdArgs.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/Config.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/Models.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/Queries.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/ServantWiring.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./src/Paths_functional_starter.hs"
-      component: "functional-starter:exe:functional-starter-exe"
-
-    - path: "./mongotest/example.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/example.hs"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/example.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./mongotest/API.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./oneOff/example.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./mongotest/CmdArgs.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/Main.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./mongotest/Config.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/API.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./mongotest/Models.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/CmdArgs.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./mongotest/Queries.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/Config.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./mongotest/ServantWiring.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/Models.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./mongotest/Paths_functional_starter.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/Queries.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./src/API.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/ServantWiring.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./src/CmdArgs.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/MyMonads/Reader.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./src/Config.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/MyMonads/State.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./src/Models.hs"
-      component: "functional-starter:exe:mongoEg-exe"
+    - path: "./app/MyMonads/Writer.hs"
+      component: "functional-starter:exe:cond1"
 
-    - path: "./src/Queries.hs"
-      component: "functional-starter:exe:mongoEg-exe"
-
-    - path: "./src/ServantWiring.hs"
-      component: "functional-starter:exe:mongoEg-exe"
-
-    - path: "./src/Paths_functional_starter.hs"
-      component: "functional-starter:exe:mongoEg-exe"
-
-    - path: "./mongotest/oplogtest.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/oplogtest.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./mongotest/API.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./mongotest/CmdArgs.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./mongotest/Config.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./mongotest/Models.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./mongotest/Queries.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./mongotest/ServantWiring.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./mongotest/Paths_functional_starter.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/API.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/CmdArgs.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/Config.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/Models.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/Queries.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/ServantWiring.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./src/Paths_functional_starter.hs"
-      component: "functional-starter:exe:oplog-exe"
-
-    - path: "./schema/Main.hs"
-      component: "functional-starter:exe:schema-exe"
+    - path: "./app/Paths_functional_starter.hs"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/Main.hs"
-      component: "functional-starter:exe:schema-exe"
-
-    - path: "./schema/API.hs"
-      component: "functional-starter:exe:schema-exe"
-
-    - path: "./schema/CmdArgs.hs"
-      component: "functional-starter:exe:schema-exe"
-
-    - path: "./schema/Config.hs"
-      component: "functional-starter:exe:schema-exe"
-
-    - path: "./schema/Models.hs"
-      component: "functional-starter:exe:schema-exe"
-
-    - path: "./schema/Queries.hs"
-      component: "functional-starter:exe:schema-exe"
-
-    - path: "./schema/ServantWiring.hs"
-      component: "functional-starter:exe:schema-exe"
-
-    - path: "./schema/Paths_functional_starter.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/API.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/CmdArgs.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/Config.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/Models.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/Queries.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/ServantWiring.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./src/MyMonads/Reader.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./src/MyMonads/State.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./src/MyMonads/Writer.hs"
+      component: "functional-starter:exe:cond1"
 
     - path: "./src/Paths_functional_starter.hs"
-      component: "functional-starter:exe:schema-exe"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/Main.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/API.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/CmdArgs.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/Config.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/Models.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/Queries.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/ServantWiring.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/MyMonads/Reader.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/MyMonads/State.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/MyMonads/Writer.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./oneOff/Paths_functional_starter.hs"
+      component: "functional-starter:exe:cond1"
+
+    - path: "./app/example.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/example.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/example.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/Main.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/API.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/CmdArgs.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/Config.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/Models.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/Queries.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/ServantWiring.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/MyMonads/Reader.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/MyMonads/State.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/MyMonads/Writer.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/Paths_functional_starter.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/Main.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/MyMonads/Reader.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/MyMonads/State.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/MyMonads/Writer.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/Main.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/API.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/CmdArgs.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/Config.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/Models.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/Queries.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/ServantWiring.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/MyMonads/Reader.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/MyMonads/State.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/MyMonads/Writer.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./oneOff/Paths_functional_starter.hs"
+      component: "functional-starter:exe:mongoEg"
+
+    - path: "./app/oplogtest.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/oplogtest.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/oplogtest.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/Main.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/API.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/CmdArgs.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/Config.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/Models.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/Queries.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/ServantWiring.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/MyMonads/Reader.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/MyMonads/State.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/MyMonads/Writer.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/Paths_functional_starter.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/Main.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/MyMonads/Reader.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/MyMonads/State.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/MyMonads/Writer.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/Main.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/API.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/CmdArgs.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/Config.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/Models.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/Queries.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/ServantWiring.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/MyMonads/Reader.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/MyMonads/State.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/MyMonads/Writer.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./oneOff/Paths_functional_starter.hs"
+      component: "functional-starter:exe:oplog"
+
+    - path: "./app/schema.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/schema.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/schema.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/Main.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/API.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/CmdArgs.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/Config.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/Models.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/Queries.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/ServantWiring.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/MyMonads/Reader.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/MyMonads/State.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/MyMonads/Writer.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/Paths_functional_starter.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/Main.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/MyMonads/Reader.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/MyMonads/State.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/MyMonads/Writer.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/Main.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/API.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/CmdArgs.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/Config.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/Models.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/Queries.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/ServantWiring.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/MyMonads/Reader.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/MyMonads/State.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/MyMonads/Writer.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./oneOff/Paths_functional_starter.hs"
+      component: "functional-starter:exe:schema"
+
+    - path: "./app/Main.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/Main.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/Main.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/API.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/CmdArgs.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/Config.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/Models.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/Queries.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/ServantWiring.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/MyMonads/Reader.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/MyMonads/State.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/MyMonads/Writer.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/Paths_functional_starter.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/MyMonads/Reader.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/MyMonads/State.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/MyMonads/Writer.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/API.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/CmdArgs.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/Config.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/Models.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/Queries.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/ServantWiring.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/MyMonads/Reader.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/MyMonads/State.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/MyMonads/Writer.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./oneOff/Paths_functional_starter.hs"
+      component: "functional-starter:exe:server"
+
+    - path: "./app/ticTacToe.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/ticTacToe.hs"
+      component: "functional-starter:exe:tictactoe"
 
     - path: "./oneOff/ticTacToe.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/Main.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/API.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/CmdArgs.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/Config.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/Models.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/Queries.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/ServantWiring.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/MyMonads/Reader.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/MyMonads/State.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/MyMonads/Writer.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./app/Paths_functional_starter.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/Main.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/API.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/CmdArgs.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/Config.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/Models.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/Queries.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/ServantWiring.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/MyMonads/Reader.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/MyMonads/State.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/MyMonads/Writer.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./src/Paths_functional_starter.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/Main.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/API.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/CmdArgs.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/Config.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/Models.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/Queries.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/ServantWiring.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/MyMonads/Reader.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/MyMonads/State.hs"
+      component: "functional-starter:exe:tictactoe"
+
+    - path: "./oneOff/MyMonads/Writer.hs"
       component: "functional-starter:exe:tictactoe"
 
     - path: "./oneOff/Paths_functional_starter.hs"
       component: "functional-starter:exe:tictactoe"
 
-    - path: "./test"
+    - path: "./app"
+      component: "functional-starter:test:functional-starter-test"
+
+    - path: "./src"
+      component: "functional-starter:test:functional-starter-test"
+
+    - path: "./oneOff"
       component: "functional-starter:test:functional-starter-test"

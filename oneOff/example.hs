@@ -6,6 +6,7 @@
 
 module Main (main) where
 
+import ClassyPrelude hiding (delete, find, sort)
 import Control.Monad.Trans (liftIO)
 import Database.MongoDB
   ( Action,
@@ -65,4 +66,4 @@ newYorkTeams :: Action IO [Document]
 newYorkTeams = rest =<< find (select ["home.state" =: "NY"] "team") {project = ["name" =: 1, "league" =: 1]}
 
 printDocs :: String -> [Document] -> Action IO ()
-printDocs title docs = liftIO $ putStrLn title >> mapM_ (print . exclude ["_id"]) docs
+printDocs title docs = liftIO $ print title >> mapM_ (print . exclude ["_id"]) docs
