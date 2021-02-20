@@ -1,6 +1,7 @@
 #!/usr/bin/env stack
 -- stack script --resolver lts-17.0
 
+import ClassyPrelude
 import Conduit
 
 main :: IO ()

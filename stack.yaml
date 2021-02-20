@@ -49,6 +49,8 @@ extra-deps:
   - servant-websockets-2.0.0@sha256:6e9e3600bced90fd52ed3d1bf632205cb21479075b20d6637153cc4567000234,2253
   - streamly-0.7.2@sha256:2dbcbd2d807b5465a281bde1a71a21f1e1e1b00be93b23083a868a07dc76de95,28286
   - primitive-0.7.0.1@sha256:a381571c36edc7dca28b77fe8159b43c14c640087ec5946adacf949feec64231,3433
+  - fastpbkdf2-0.1.0.0@sha256:f70d50961718ffb1739371886c15ddad9263ecd134bdd4ce0f5831f956e48896,2187
+  - oidc-client-0.6.0.0@sha256:2079dc5c9dfb5b3e2fa93098254ca16787c01a0cd3634b1d84afe84c9a6c4825,3368
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

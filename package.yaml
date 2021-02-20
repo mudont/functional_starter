@@ -14,19 +14,137 @@ category: Web
 
 description: Please see the README on GitHub at <https://github.com/mudont/functional_starter#README>
 default-extensions:
-  - NoImplicitPrelude
-  - OverloadedStrings
-  - TemplateHaskell
+  - ApplicativeDo
+  - BangPatterns
+  - ConstraintKinds
   - DataKinds
+  - DefaultSignatures
+  - DeriveFoldable
+  - DeriveFunctor
   - DeriveGeneric
+  - DeriveLift
+  - DeriveTraversable
+  - DerivingStrategies
+  - DuplicateRecordFields
+  - EmptyCase
+  - ExistentialQuantification
   - FlexibleContexts
   - FlexibleInstances
-  - MultiParamTypeClasses
+  - FunctionalDependencies
+  - GADTs
   - GeneralizedNewtypeDeriving
-  - TypeOperators
+  - InstanceSigs
+  - KindSignatures
+  - LambdaCase
+  - MultiParamTypeClasses
+  - MultiWayIf
+  - NamedFieldPuns
+  - NoImplicitPrelude
+  - OverloadedLabels
+  - OverloadedLists
+  - OverloadedStrings
+  - PackageImports
+  - PatternSynonyms
+  - QuasiQuotes
+  - RankNTypes
+  - RecordWildCards
+  - ScopedTypeVariables
+  - StandaloneDeriving
+  - TemplateHaskell
+  - TupleSections
+  - TypeApplications
   - TypeFamilies
-  - ConstraintKinds
+  - TypeFamilyDependencies
+  - TypeOperators
 
+dependencies:
+  - aeson
+  - aeson-pretty
+  - base ==4.*
+  - base >= 4.7 && <= 5.0
+  - base-compat
+  - base64
+  - base64-bytestring
+  - binary
+  - blaze-html
+  - blaze-markup
+  - bson
+  - bytestring
+  - case-insensitive
+  - cereal
+  - classy-prelude
+  - conduit
+  - configurator
+  - containers
+  - cprng-aes
+  - crypto-random
+  - cryptonite
+  - data-default
+  - data-has
+  - dhall
+  - directory
+  - exceptions
+  - fast-logger
+  - fastpbkdf2
+  - generic-lens
+  - ghc-prim
+  - hspec
+  - hspec-wai
+  - hspec-wai-json
+  - http-client
+  - http-client-tls
+  - http-types
+  - jose
+  - jose-jwt
+  - katip
+  - lens
+  - lens-aeson
+  - libiserv
+  - memory
+  - mime-mail
+  - mongoDB
+  - mtl
+  - natural-transformation
+  - network
+  - oidc-client
+  - optparse-applicative
+  - optparse-generic
+  - postgresql-simple
+  - protolude
+  - random
+  - raw-strings-qq
+  - resource-pool
+  - rio
+  - selda
+  - selda-postgresql
+  - selda-sqlite
+  - servant
+  - servant-auth
+  - servant-auth-server
+  - servant-blaze
+  - servant-client
+  - servant-server
+  - servant-websockets
+  - smtp-mail
+  - split
+  - stm
+  - streamly
+  - string-conv
+  - string-interpolate
+  - text
+  - threads
+  - time
+  - transformers
+  - unordered-containers
+  - uuid
+  - vector
+  - wai
+  - wai-cors
+  - wai-extra
+  - wai-logger
+  - warp
+  - warp >= 3.2
+  - websockets
 _exe-defs: &exe-defaults
   source-dirs:
     - app
@@ -36,64 +154,13 @@ _exe-defs: &exe-defaults
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-  dependencies:
-    - aeson
-    - base >= 4.7 && <= 5.0
-    - blaze-html
-    - bytestring
-    - case-insensitive
-    - classy-prelude
-    - conduit
-    - configurator
-    - containers
-    - data-has
-    - dhall
-    - exceptions
-    - fast-logger
-    - ghc-prim
-    - http-types
-    - jose
-    - katip
-    - lens
-    - mongoDB
-    - mtl
-    - natural-transformation
-    - network
-    - optparse-applicative
-    - postgresql-simple
-    - raw-strings-qq
-    - resource-pool
-    - selda
-    - selda-postgresql
-    - selda-sqlite
-    - servant
-    - servant-auth
-    - servant-auth-server
-    - servant-server
-    - servant-websockets
-    - split
-    - stm
-    - streamly
-    - text
-    - threads
-    - time
-    - transformers
-    - unordered-containers
-    - uuid
-    - vector
-    - wai
-    - wai-cors
-    - wai-logger
-    - warp
-    - websockets
+    - -Wall
 
 library:
   <<: *exe-defaults
   exposed-modules:
-    - Models
     - ServantWiring
     - API
-    - Queries
     - Config
     - CmdArgs
 
@@ -109,15 +176,12 @@ executables:
   # oplog:
   #   <<: *exe-defaults
   #   main: oplogtest.hs
-
   # tictactoe:
   #   <<: *exe-defaults
   #   main: ticTacToe.hs
-
-  mongoEg:
-    <<: *exe-defaults
-    main: example.hs
-
+  # mongoEg:
+  #   <<: *exe-defaults
+  #   main: example.hs
   # cond1:
   #   <<: *exe-defaults
   #   main: example.hs
@@ -125,6 +189,9 @@ tests:
   functional-starter-test:
     <<: *exe-defaults
     main: Spec.hs
+    source-dirs:
+      - test
+      - src
     dependencies:
       - functional-starter
       - hspec

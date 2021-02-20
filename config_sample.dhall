@@ -5,13 +5,13 @@ let port
 in  { port
     , dbHost = "localhost"
     , dbPort = 5432
-    , database = "tennis"
+    , database = "haskell"
     , schema = None Text
-    , dbUsername = Some "murali"
+    , dbUsername = Some "postgres"
     , dbPassword = None Text
     , redirectUri = "/google/cb"
     , clientId =
-        "500140516683-3avj9ie1bc9oh4jii07kmvl3v5i3vcd7.apps.googleusercontent.com"
-    , clientPassword = "4HIZfO7UUAoEUAFGmlq3pod_"
+        "100140516089-some_kind_of_appi07kmvl3v5i3vcd7.apps.googleusercontent.com"
+    , clientPassword = "5NOT_REALxoFAKE0mlq3pod_"
     , jwkFile = "jwk.dat"
     }

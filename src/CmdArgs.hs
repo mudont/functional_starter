@@ -4,7 +4,6 @@
 
 module CmdArgs where
 
----------------------------------------
 import ClassyPrelude
 import Config
 import Data.Semigroup ((<>))

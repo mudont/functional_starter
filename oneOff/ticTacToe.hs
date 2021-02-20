@@ -8,6 +8,7 @@
 
 module Main where
 
+import ClassyPrelude hiding (find, getLine, hSetBuffering, map, mapM_, print, putStr, putStrLn, replicate, words, zipWith, (++))
 import Control.Lens
 import Control.Monad
 import Control.Monad.State.Strict
@@ -15,6 +16,7 @@ import Data.List
 import Data.Maybe
 import Debug.Trace
 import System.IO
+import Prelude (read)
 
 data Mark = O | X deriving (Show, Eq)
 

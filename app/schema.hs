@@ -1,3 +1,6 @@
+#!/usr/bin/env stack
+-- stack script --resolver lts-17.0
+
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -7,12 +10,13 @@ module Main where
 ---------------------------------------
 import ClassyPrelude hiding (group)
 import Config
+import DB.Models
 import Data.Semigroup ((<>))
 import qualified Data.Text as T
 import Database.Selda
 import Database.Selda.PostgreSQL
-import Models
-import Options.Applicative
+--import Options.Applicative
+import Options.Generic
 
 dropTables :: PGConnectInfo -> IO ()
 dropTables connInfo = withPostgreSQL connInfo $ do
@@ -35,10 +39,11 @@ createTables connInfo = withPostgreSQL connInfo $ do
   createTable site
 
 data Opts = Opts
-  { optGlobalFlag :: !Bool,
+  { optGlobalFlag :: Bool <?> "help",
     optConfigFile :: !Text,
     optCommand :: !Command
   }
+  deriving (Generic, Show)
 
 textOption :: Mod OptionFields String -> Parser T.Text
 textOption = fmap T.pack . strOption

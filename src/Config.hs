@@ -1,30 +1,29 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module Config where
 
 import ClassyPrelude
 import Dhall
----------------------------------------
-import Models
-import Options.Applicative
 
-data MyConfig = MyConfig
-  { port :: Natural,
+---------------------------------------
+
+data AppConfig = AppConfig
+  { port :: Int,
     dbHost :: Text,
     dbPort :: Natural,
     database :: Text,
     schema :: Maybe Text,
     dbUsername :: Maybe Text,
-    dbPassword :: Maybe Text
+    dbPassword :: Maybe Text,
+    redirectUri :: Text,
+    clientId :: Text,
+    clientPassword :: Text,
+    jwkFile :: Text
   }
   deriving (Generic, Show)
 
-instance FromDhall MyConfig
+instance FromDhall AppConfig
 
-config :: Text -> IO MyConfig
+config :: Text -> IO AppConfig
 config configFile = do
   putStrLn "Reading Dhall config "
-  cfg :: MyConfig <- input Dhall.auto configFile
+  cfg :: AppConfig <- input Dhall.auto configFile
   pure cfg

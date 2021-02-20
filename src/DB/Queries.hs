@@ -1,17 +1,11 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeOperators #-}
-
-module Queries where
+module DB.Queries where
 
 -- BEgin paste WilliamYao's selda code
 import ClassyPrelude hiding (group)
+import DB.Models
 import Data.Fixed (Pico)
 import Data.Time
 import Database.Selda hiding (Group)
-import Database.Selda.PostgreSQL
-import Models
 
 mkUTCTime ::
   (Integer, Int, Int) ->
@@ -25,9 +19,14 @@ mkUTCTime (year, mon, day) (hour, min, sec) =
 --------------------
 -- QUERIES
 --------------------
+getUser :: Text -> Query s (Row s User)
+getUser username = do
+  u <- select user
+  restrict (u ! #username .== literal username)
+  pure u
 
-allPeople :: Query s (Row s Person)
-allPeople = select person
+allUsers :: Query s (Row s User)
+allUsers = select user
 
 allGroups :: Query s (Row s Group)
 allGroups = select group

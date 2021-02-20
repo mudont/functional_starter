@@ -1,12 +1,14 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE TypeOperators #-}
-
 module API where
 
-import Models
-import Servant (Get, JSON, Raw, type (:<|>), type (:>))
+import API.AuthApi
+import API.RajniApi
+import API.TennisApi (TennisApi)
+import API.WsApi (WsApi)
+import Servant.API
 
-type API =
-  "people" :> Get '[JSON] [Person]
-    :<|> "groups" :> Get '[JSON] [Group]
-    :<|> "static" :> Raw
+type API auths =
+  AuthApi
+    :<|> TennisApi
+    :<|> RajniApi auths -- Some fun Rajni/Chuck Norris "facts". Nothing more
+    :<|> WsApi
+    :<|> Raw

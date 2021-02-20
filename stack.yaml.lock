@@ -67,6 +67,20 @@ packages:
       sha256: fea4312bd404ad504e44a7fd933a3b3442c0a5e1c41bd8abec3c2e7282d88e18
   original:
     hackage: primitive-0.7.0.1@sha256:a381571c36edc7dca28b77fe8159b43c14c640087ec5946adacf949feec64231,3433
+- completed:
+    hackage: fastpbkdf2-0.1.0.0@sha256:f70d50961718ffb1739371886c15ddad9263ecd134bdd4ce0f5831f956e48896,2187
+    pantry-tree:
+      size: 497
+      sha256: a5be25cc1af417a35b89cdafe7f1c9c47916569fbed9803fa97a4cecfcb97d25
+  original:
+    hackage: fastpbkdf2-0.1.0.0@sha256:f70d50961718ffb1739371886c15ddad9263ecd134bdd4ce0f5831f956e48896,2187
+- completed:
+    hackage: oidc-client-0.6.0.0@sha256:2079dc5c9dfb5b3e2fa93098254ca16787c01a0cd3634b1d84afe84c9a6c4825,3368
+    pantry-tree:
+      size: 1298
+      sha256: c8dac64944a1e60d14958067e1992732effe723d60353690720c34b4d126af48
+  original:
+    hackage: oidc-client-0.6.0.0@sha256:2079dc5c9dfb5b3e2fa93098254ca16787c01a0cd3634b1d84afe84c9a6c4825,3368
 snapshots:
 - completed:
     size: 563100

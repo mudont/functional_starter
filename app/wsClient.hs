@@ -12,9 +12,6 @@ where
 --------------------------------------------------------------------------------
 import ClassyPrelude
 import Control.Concurrent (forkIO)
-import Control.Monad (forever, unless)
-import Control.Monad.Trans (liftIO)
-import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import Network.Socket (withSocketsDo)
