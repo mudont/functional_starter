@@ -23,7 +23,9 @@ import ClassyPrelude
 import CmdArgs
 import Config
 import Crypto.Random.AESCtr
+import Data.List.Split (startsWith)
 import qualified Data.Map as M
+import Data.Text (isPrefixOf)
 import Data.Text.Encoding
 import Database.Selda.PostgreSQL
 import Network.HTTP.Client
@@ -53,7 +55,10 @@ initOIDC AppConfig {..} = do
   -- putText $ "DBG ssm initialized. Map len" <> (show . length . M.elems $ ssm')
   mgr <- newManager tlsManagerSettings
   prov <- O.discover "https://accounts.google.com" mgr
-  let ru = encodeUtf8 ("http://localhost:" <> toS (show port :: String) <> redirectUri)
+  let ru =
+        if "/" `isPrefixOf` redirectUri
+          then encodeUtf8 ("http://localhost:" <> toS (show port :: String) <> redirectUri)
+          else toS redirectUri
   let clId = encodeUtf8 clientId
   let clPswd = encodeUtf8 clientPassword
   let oidc = O.setCredentials clId clPswd ru $ O.newOIDC prov

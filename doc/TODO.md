@@ -9,7 +9,7 @@
 4. [x] Selda PostgreSQL client
 5. [X] OIDC auth
 6. [ ] MIgrate database. [opaleye-gen](https://github.com/folsen/opaleye-gen) might be useful\
-   Couldn't find a generator for Selda
+   Couldn't find a generator for Selda. But Selda doesn't support all the PG column types anyway.
      
 7. [X] `DjangoPassword` lib for verifying and hashing Django compatible passwords
 8. [ ] Write cli script to convert CMHackers database to new database. 

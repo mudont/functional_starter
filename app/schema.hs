@@ -15,8 +15,9 @@ import Data.Semigroup ((<>))
 import qualified Data.Text as T
 import Database.Selda
 import Database.Selda.PostgreSQL
---import Options.Applicative
-import Options.Generic
+import Options.Applicative
+
+--import Options.Generic
 
 dropTables :: PGConnectInfo -> IO ()
 dropTables connInfo = withPostgreSQL connInfo $ do
@@ -39,7 +40,7 @@ createTables connInfo = withPostgreSQL connInfo $ do
   createTable site
 
 data Opts = Opts
-  { optGlobalFlag :: Bool <?> "help",
+  { optGlobalFlag :: !Bool,
     optConfigFile :: !Text,
     optCommand :: !Command
   }

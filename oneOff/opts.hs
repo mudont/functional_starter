@@ -8,7 +8,7 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TypeOperators #-}
 
-import Data.Coerce
+import Data.Coerce ()
 import Options.Generic
 import Prelude
 
