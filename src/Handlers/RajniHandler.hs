@@ -31,7 +31,12 @@ cQs =
     "Chuck Norris can kill two stones with one bird.",
     "Chuck Norris once visited the Virgin Islands. They are now The Islands.",
     "When the Boogeyman goes to sleep every night, he checks his closet for Chuck Norris.",
-    "Chuck Norris knows Victoria's secret"
+    "Chuck Norris knows Victoria's secret",
+    "When Chuck Norris was born, he drove his mom home from the hospital",
+    "Time waits for no man, unless that man is Chuck Norris",
+    "When God said, ‘Let There Be LIGHT!’ Chuck Norris said, ‘Say Please.’",
+    "Chuck Norris has been to Mars. That’s why there are no signs of life there.",
+    "Chuck Norris starred in Star Wars. He was the force"
   ]
 
 rQs :: [String]
@@ -42,5 +47,14 @@ rQs =
     "Rajni once told a boy to keep quiet. He became Manmohan Singh",
     "Idhu eppai irukku",
     "See-eeviduven",
-    "Naan eppo varuven, epdi varuvennu yarukkum theriyaadu. Aana vara vendiya nerathula"
+    "Naan eppo varuven, epdi varuvennu yarukkum theriyaadu. Aana vara vendiya nerathula correcta vandhuduven",
+    "Aandavan nallavangala sodhipaan aana kai vida maatan! Kettavangalukku alli alli kodupaan aana kadaisila kai vittuduvaan!",
+    "En vazhi, thani vazhi",
+    "Kashta padama ethivum kadaikathu kashta padama kedachathu ennikume nelaikaathu",
+    "Khatam... Khatam... Mudinjathu mudinju potchu",
+    "Kannaaa panniga thaa kutama varu singam singala tha varum",
+    "Pera kettaale chumma adhirudhulla?",
+    "Arthasasthram unga vazhi, Dharmasasthram en vazhi",
+    "Naan vara vendiya neram vandhudichi nee poga vendiya neram nerungidichi",
+    "Naan solrathaiyum seiven, sollaathathiyum seiven"
   ]

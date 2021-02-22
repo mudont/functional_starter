@@ -9,12 +9,12 @@ import Network.Mail.SMTP
 import Prelude
 
 from :: Address
-to :: [Address]
-cc :: [Address]
 from = Address Nothing "maverickone@gmail.com"
 
+to :: [Address]
 to = [Address (Just "Monad Don") "email@domain.com"]
 
+cc :: [Address]
 cc = []
 
 bcc :: [Address]

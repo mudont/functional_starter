@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cc571e22c74e4f2f748c80c127ee3860bb7d6023797be3dd9ff7bd1789d95b30
+-- hash: ce11dae7c8bacce359c164a4129d55d4d5573021ef1fe57f26d6c6c743f6313f
 
 name:           functional-starter
 version:        0.1.0.0
@@ -109,14 +109,18 @@ library
     , natural-transformation
     , network
     , oidc-client
+    , opaleye
     , optparse-applicative
     , optparse-generic
     , postgresql-simple
+    , product-profunctors
+    , profunctors
     , protolude
     , random
     , raw-strings-qq
     , resource-pool
     , rio
+    , scientific
     , selda
     , selda-postgresql
     , selda-sqlite
@@ -230,14 +234,18 @@ executable server
     , natural-transformation
     , network
     , oidc-client
+    , opaleye
     , optparse-applicative
     , optparse-generic
     , postgresql-simple
+    , product-profunctors
+    , profunctors
     , protolude
     , random
     , raw-strings-qq
     , resource-pool
     , rio
+    , scientific
     , selda
     , selda-postgresql
     , selda-sqlite
@@ -349,14 +357,18 @@ test-suite functional-starter-test
     , natural-transformation
     , network
     , oidc-client
+    , opaleye
     , optparse-applicative
     , optparse-generic
     , postgresql-simple
+    , product-profunctors
+    , profunctors
     , protolude
     , random
     , raw-strings-qq
     , resource-pool
     , rio
+    , scientific
     , selda
     , selda-postgresql
     , selda-sqlite
