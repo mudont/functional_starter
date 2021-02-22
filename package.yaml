@@ -107,14 +107,18 @@ dependencies:
   - natural-transformation
   - network
   - oidc-client
+  - opaleye
   - optparse-applicative
   - optparse-generic
   - postgresql-simple
+  - profunctors
+  - product-profunctors
   - protolude
   - random
   - raw-strings-qq
   - resource-pool
   - rio
+  - scientific
   - selda
   - selda-postgresql
   - selda-sqlite

@@ -3,21 +3,30 @@
 1. [ ] Merge in from other repos
     - [X] `servant-oidc` has **elm client** (with google-auth+servant)
     - [ ] `oplog-broadcast` has **websocket** push (+ auth in servant)
-1. [ ] Use this Elm architecture [simple example](https://github.com/halfzebra/elm-examples.git) or the [Full SPA](https://github.com/halfzebra/elm-spa-example)
-2. [x] Servant REST API framework
-3. [x] PostgreSQL
-4. [x] Selda PostgreSQL client
-5. [X] OIDC auth
-6. [ ] MIgrate database. [opaleye-gen](https://github.com/folsen/opaleye-gen) might be useful\
+2. Add Forgot Password screen
+3. Registration needs Captcha
+4. Ashok's list: Few things that would really be useful are 
+   1) Adding new user & reset passwords
+   2) Hacker's league match up &  notification (homepage/email/whatsup) - This is more of an automation on the BE
+   3) Scores input - both hackers & usta league 
+   4) capture usta opponents/match notes.
+   5) leaderboard
+   
+5. [ ] Use this Elm architecture [simple example](https://github.com/halfzebra/elm-examples.git) or the [Full SPA](https://github.com/halfzebra/elm-spa-example)
+6. [x] Servant REST API framework
+7. [x] PostgreSQL
+8. [x] Selda PostgreSQL client
+9.  [X] OIDC auth
+10. [ ] MIgrate database. [opaleye-gen](https://github.com/folsen/opaleye-gen) might be useful\
    Couldn't find a generator for Selda. But Selda doesn't support all the PG column types anyway.
      
-7. [X] `DjangoPassword` lib for verifying and hashing Django compatible passwords
-8. [ ] Write cli script to convert CMHackers database to new database. 
-9.  [ ] [optparse-generic](https://hackage.haskell.org/package/optparse-generic-1.4.4/docs/Options-Generic.html)
-10. [ ] Logging
-11. [ ] [Lucid for HTML](https://hackage.haskell.org/package/lucid)
-12. [x] Configuration (Dhall)
-13. [ ] Merge in from other repos
+11. [X] `DjangoPassword` lib for verifying and hashing Django compatible passwords
+12. [ ] Write cli script to convert CMHackers database to new database. 
+13. [ ] [optparse-generic](https://hackage.haskell.org/package/optparse-generic-1.4.4/docs/Options-Generic.html)
+14. [ ] Logging
+15. [ ] [Lucid for HTML](https://hackage.haskell.org/package/lucid)
+16. [x] Configuration (Dhall)
+17. [ ] Merge in from other repos
    - [X] `servant-oidc` has **elm client** (with google-auth+servant)
    - [ ] `oplog-broadcast` has **websocket** push (+ auth in servant)
 13. [ ] Organize and clean up source code
