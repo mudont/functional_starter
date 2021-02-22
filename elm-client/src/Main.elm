@@ -1,12 +1,14 @@
 port module Main exposing (..)
 
 import Browser
+import GoogleButton exposing (googleButton)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as Decode exposing (..)
 import Json.Encode as Encode exposing (..)
+import Msg exposing (..)
 
 
 main : Program (Maybe Model) Model Msg
@@ -204,24 +206,6 @@ setStorageHelper model =
 
 
 
--- Messages
-
-
-type Msg
-    = GetQuote
-    | FetchRandomQuoteCompleted (Result Http.Error String)
-    | SetUsername String
-    | SetPassword String
-    | ClickRegisterUser
-    | ClickLogIn
-    | GetTokenCompleted (Result Http.Error String)
-    | GetProtectedQuote
-    | FetchProtectedQuoteCompleted (Result Http.Error String)
-    | ClickGoogleLogIn
-    | LogOut
-
-
-
 -- Ports
 
 
@@ -342,7 +326,7 @@ view model =
                     , div [ class "text-center" ]
                         [ button [ class "btn btn-primary", onClick ClickLogIn ] [ text "Log In" ]
                         , button [ class "btn btn-link", onClick ClickRegisterUser ] [ text "Register" ]
-                        , a [ href "/google" ] [ text "Google" ]
+                        , googleButton
 
                         --  , button [ class "btn btn-link", onClick ClickGoogleLogIn ] [ text "Google" ]
                         ]
@@ -375,7 +359,7 @@ view model =
             else
                 p [ class "text-center" ] [ text "Please log in or register to see protected quotes." ]
     in
-    { title = "Elm-Client"
+    { title = "CM Hackers"
     , body =
         [ div [ class "container" ]
             [ h2 [ class "text-center" ] [ text "Rajnikanth Quotes" ]
