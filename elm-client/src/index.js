@@ -36,6 +36,8 @@ elmApp.ports.removeStorage.subscribe(function () {
 
   console.log('DBG murali removeStorage sub')
   localStorage.removeItem('model');
+  localStorage.removeItem('user-id')
+  localStorage.removeItem('access-token')
 });
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

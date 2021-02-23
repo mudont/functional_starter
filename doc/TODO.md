@@ -1,9 +1,18 @@
 
+Note on 2/22/2021: 
+Opaleye User update funcitons are in place
+Need to use them to register new users and other stuff
+Elm client needs to support Registering. Reset password workflow needed too
 
 1. [ ] Merge in from other repos
     - [X] `servant-oidc` has **elm client** (with google-auth+servant)
     - [ ] `oplog-broadcast` has **websocket** push (+ auth in servant)
 2. Add Forgot Password screen
+   - Reset password button
+   - Server creates a reset link with a random token
+      + saves it to panding reset table with a timestamp
+      + API to handle reset with a token. Basically a login link with special token. It should login the user if the token is good. After each successful login, clear pending resets for the user
+      + 
 3. Registration needs Captcha
 4. Ashok's list: Few things that would really be useful are 
    1) Adding new user & reset passwords

@@ -16,6 +16,8 @@ If you don't have these already, install:
 ## Preliminary steps
 - `mv config_sample.dhall config.dhall`
 - Edit `config.dhall` and make appropriate changes
+- opaleye-gen -d postgresql://localhost/tennis -o src/DB/Opaleye/Database.hs  # Uses modifed opaleye-gen
+- 
 ## Building
 
 ```

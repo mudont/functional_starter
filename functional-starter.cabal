@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 22bf6f0edf22718980e2bec651afa437ac62d839ed57f29aeeb9403c66484429
+-- hash: 21f0b52fd43311958f8810a3c1c7cfac82d7f39ef3b7195a3d13390b171b1819
 
 name:           functional-starter
 version:        0.1.0.0
@@ -39,6 +39,8 @@ executable cmhackersd
       CmdArgs
       Config
       DB.Models
+      DB.Opaleye.Database
+      DB.Opaleye.User
       DB.Queries
       DjangoPassword
       Err
@@ -166,6 +168,8 @@ test-suite functional-starter-test
       CmdArgs
       Config
       DB.Models
+      DB.Opaleye.Database
+      DB.Opaleye.User
       DB.Queries
       DjangoPassword
       Err
