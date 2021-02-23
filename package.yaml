@@ -143,6 +143,7 @@ dependencies:
   - uuid
   - vector
   - wai
+  - wai-app-static
   - wai-cors
   - wai-extra
   - wai-logger
@@ -160,16 +161,16 @@ _exe-defs: &exe-defaults
     - -with-rtsopts=-N
     - -Wall
 
-library:
-  <<: *exe-defaults
-  exposed-modules:
-    - ServantWiring
-    - API
-    - Config
-    - CmdArgs
+# library:
+#   <<: *exe-defaults
+#   exposed-modules:
+#     - ServantWiring
+#     - API
+#     - Config
+#     - CmdArgs
 
 executables:
-  server:
+  cmhackersd:
     <<: *exe-defaults
     main: Main.hs
   # schema:

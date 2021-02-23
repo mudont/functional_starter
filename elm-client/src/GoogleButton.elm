@@ -1,13 +1,11 @@
 module GoogleButton exposing (googleButton)
 
 import Bootstrap.Button as Button
-import Bootstrap.CDN as CDN
-import Bootstrap.Grid as Grid
 import Browser exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Msg exposing (..)
+import Messages exposing (..)
 
 
 googleButton : Html Msg

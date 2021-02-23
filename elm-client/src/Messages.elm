@@ -1,10 +1,12 @@
-module Msg exposing (..)
+module Messages exposing (..)
 
+import Header.Messages
 import Http
 
 
 type Msg
-    = GetQuote
+    = HeaderMsg Header.Messages.Msg
+    | GetQuote
     | FetchRandomQuoteCompleted (Result Http.Error String)
     | SetUsername String
     | SetPassword String

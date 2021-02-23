@@ -4,10 +4,12 @@ module Handlers where
 
 import API
 import AppM
+import ClassyPrelude
 import Handlers.AuthHandler
 import Handlers.RajniHandler
 import Handlers.TennisHandler (tennisHandler)
 import Handlers.WsHandler (wsHandler)
+import Network.Wai.Application.Static
 import Servant
 import Servant.Auth ()
 import qualified Servant.Auth.Server as SAS
@@ -19,4 +21,6 @@ server cs jwts =
     :<|> tennisHandler
     :<|> rajniServer
     :<|> wsHandler
-    :<|> serveDirectoryWebApp "./elm-client/build"
+    :<|> serveDirectoryWith settings
+  where
+    settings = (defaultFileServerSettings "./elm-client/build") {ssRedirectToIndex = True}
