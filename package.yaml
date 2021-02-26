@@ -173,9 +173,9 @@ executables:
   cmhackersd:
     <<: *exe-defaults
     main: Main.hs
-  # schema:
-  #   <<: *exe-defaults
-  #   main: schema.hs
+  schema:
+    <<: *exe-defaults
+    main: schema.hs
   # oplog:
   #   <<: *exe-defaults
   #   main: oplogtest.hs

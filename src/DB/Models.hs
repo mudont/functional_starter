@@ -10,39 +10,79 @@ import Data.Aeson.TH (deriveJSON)
 import Database.Selda hiding (Group)
 import Database.Selda.PostgreSQL ()
 
-data SiteType = Cricket | Tennis | Exchange
+data SiteType = Cricket | Tennis | Exchange | Other
   deriving (Show, Read, Bounded, Enum)
 
 instance SqlType SiteType
 
 $(deriveJSON defaultOptions ''SiteType)
 
--- data Person = Person
---   { person_id :: ID Person,
---     first_name :: Text,
---     middle_name :: Maybe Text,
---     last_name :: Text,
---     email :: Maybe Text,
---     phone :: Maybe Text,
---     login :: Text,
---     password :: Text,
---     per_created_at :: UTCTime,
---     per_updated_at :: UTCTime
---   }
--- deriving (Show, Generic)
+data User = User
+  { id :: ID User,
+    username :: Text,
+    password :: Text,
+    email :: Maybe Text,
+    created_at :: UTCTime,
+    updated_at :: UTCTime
+  }
+  deriving (Show, Generic)
 
--- instance SqlRow Person
+instance SqlRow User
 
--- person :: Table Person
--- person = table "person" [#person_id :- autoPrimary]
+user :: Table User
+user = table "user" [#id :- autoPrimary]
 
--- $(deriveJSON defaultOptions ''Person)
+$(deriveJSON defaultOptions ''User)
+
+data Site = Site
+  { id :: ID Site,
+    name :: Text,
+    owner :: ID User,
+    domain_name :: Maybe Text,
+    site_type :: SiteType,
+    created_at :: UTCTime,
+    updated_at :: UTCTime
+  }
+  deriving (Show, Generic)
+
+instance SqlRow Site
+
+$(deriveJSON defaultOptions ''Site)
+
+site :: Table Site
+site = table "site" [#id :- primary]
+
+data Person = Person
+  { id :: ID Person,
+    user_id :: Maybe (ID User),
+    first_name :: Text,
+    middle_name :: Maybe Text,
+    last_name :: Text,
+    email :: Maybe Text,
+    phone :: Maybe Text,
+    login :: Text,
+    password :: Text,
+    is_staff :: Bool,
+    is_active :: Bool,
+    is_superuser :: Bool,
+    per_created_at :: UTCTime,
+    per_updated_at :: UTCTime
+  }
+  deriving (Show, Generic)
+
+instance SqlRow Person
+
+person :: Table Person
+person = table "person" [#id :- autoPrimary]
+
+$(deriveJSON defaultOptions ''Person)
 
 data Group = Group
-  { grp_id :: ID Group,
-    grp_name :: Text,
-    grp_created_at :: UTCTime,
-    grp_updated_at :: UTCTime
+  { id :: ID Group,
+    site_id :: ID Site,
+    name :: Text,
+    created_at :: UTCTime,
+    updated_at :: UTCTime
   }
   deriving (Show, Generic)
 
@@ -51,78 +91,105 @@ instance SqlRow Group
 $(deriveJSON defaultOptions ''Group)
 
 group :: Table Group
-group = table "group" [#grp_id :- autoPrimary]
+group = table "group" [#id :- autoPrimary]
 
--- data GroupMember = GroupMember
---   { gm_person_id :: ID Person,
---     gm_grp_id :: ID Group,
---     gm_created_at :: UTCTime,
---     gm_updated_at :: UTCTime
---   }
---   deriving (Show, Generic)
-
--- instance SqlRow GroupMember
-
--- $(deriveJSON defaultOptions ''GroupMember)
-
--- groupMember :: Table GroupMember
--- groupMember = table "group_member" [(#gm_person_id :+ #gm_grp_id) :- primary]
-
--- data Site = Site
---   { site_id :: ID Site,
---     site_name :: Text,
---     site_owener :: ID Person,
---     site_type :: SiteType,
---     site_created_at :: UTCTime,
---     site_updated_at :: UTCTime
---   }
---   deriving (Show, Generic)
-
--- instance SqlRow Site
-
--- $(deriveJSON defaultOptions ''Site)
-
--- site :: Table Site
--- site = table "site" [#site_id :- primary]
-
-data User = User
-  { id :: ID User,
-    username :: Text,
-    password :: Text,
-    --last_login :: UTCTime,
-    first_name :: Text,
-    -- middle_name :: Maybe Text,
-    last_name :: Text,
-    email :: Maybe Text,
-    -- phone :: Maybe Text,
-    is_staff :: Bool,
-    is_active :: Bool,
-    is_superuser :: Bool
-    --date_joined :: UTCTime
+data GroupMember = GroupMember
+  { id :: ID GroupMember,
+    person_id :: ID Person,
+    grp_id :: ID Group,
+    created_at :: UTCTime,
+    updated_at :: UTCTime
   }
   deriving (Show, Generic)
 
-instance SqlRow User
+instance SqlRow GroupMember
 
-user :: Table User
-user = table "auth_user" [#id :- autoPrimary]
+$(deriveJSON defaultOptions ''GroupMember)
 
-$(deriveJSON defaultOptions ''User)
+groupMember :: Table GroupMember
+groupMember = table "group_member" [#id :- primary, (#person_id :+ #grp_id) :- unique]
 
---[(#pursuingMarkHitmanID :+ #pursuingMarkMarkID) :- primary]
+{-
+check_perm(obj_type, obj_id, org_id, user_id ):
+    session.user.is_superuser ||
+    session.user == org(org_id).owner||
+    (   from p in Db.Permissions
+        where p.ObjectType == objectType &&
+            ((p.ObjectId == objectId || p.ObjectId == null) &&
+            (p.UserId == session.UserAuthId || p.UserId == null) &&
+            (session.Groups.Contains(p.GroupId) || p.GroupId == null))
+        orderby p.ObjectId descending, p.UserId descending, p.Permitted, p.GroupId descending
+        select p.Permitted
+    ).FirstOrDefault();
+-}
+data Permission = Permission
+  { id :: ID Permission,
+    site_id :: ID Site,
+    object_type :: Text,
+    object_id :: Maybe Int,
+    user_id :: Maybe (ID User),
+    group_id :: Maybe (ID Group),
+    created_at :: UTCTime,
+    updated_at :: UTCTime
+  }
+  deriving (Show, Generic)
 
--- mapFields :: [(Text, Text)] -> (Text -> Text)
--- mapFields mappings t = fromMaybe t (lookup t mappings)
+instance SqlRow Permission
 
--- -- There's probably a way to get these table definitions to check if the selector
--- -- actually exists in the datatype, but I don't want to spend that time.
+$(deriveJSON defaultOptions ''Permission)
 
--- handlers :: Table Handler
--- handlers =
---   tableFieldMod "handlers" [#handlerID :- autoPrimary] $
---     mapFields
---       [ ("handlerID", "id"),
---         ("handlerCodename", "codename"),
---         ("handlerCreatedAt", "created_at"),
---         ("handlerUpdatedAt", "updated_at")
---       ]
+permission :: Table Permission
+permission = table "permission" [#id :- primary, (#object_type :+ #object_id) :- unique]
+
+-- POLLS
+data Poll = Poll
+  { id :: ID Poll,
+    site_id :: ID Site,
+    date :: Day,
+    name :: Text,
+    per_created_at :: UTCTime,
+    per_updated_at :: UTCTime
+  }
+  deriving (Show, Generic)
+
+instance SqlRow Poll
+
+$(deriveJSON defaultOptions ''Poll)
+
+poll :: Table Poll
+poll = table "poll" [#id :- primary]
+
+data PollChoice = PollChoice
+  { id :: ID PollChoice,
+    poll_id :: ID Poll,
+    name :: Text,
+    per_created_at :: UTCTime,
+    per_updated_at :: UTCTime
+  }
+  deriving (Show, Generic)
+
+instance SqlRow PollChoice
+
+$(deriveJSON defaultOptions ''PollChoice)
+
+pollChoice :: Table PollChoice
+pollChoice = table "poll_choice" [#id :- primary]
+
+data PollVote = PollVote
+  { id :: ID PollVote,
+    poll_id :: ID Poll,
+    user_id :: ID User,
+    choice :: Text,
+    per_created_at :: UTCTime,
+    per_updated_at :: UTCTime
+  }
+  deriving (Show, Generic)
+
+instance SqlRow PollVote
+
+$(deriveJSON defaultOptions ''PollVote)
+
+pollVote :: Table PollVote
+pollVote = table "poll_vote" [#id :- primary]
+
+-- TENNIS

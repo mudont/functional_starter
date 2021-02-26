@@ -9,7 +9,7 @@ import Control.Monad
 import Control.Monad.Except
 import Control.Monad.Trans.Reader (asks)
 import Crypto.Random.API (CPRG, cprgGenBytes)
-import DB.Models
+import DB.Selda.CMModels
 import "base64-bytestring" Data.ByteString.Base64.URL (encode)
 import Data.IORef
   ( IORef,
@@ -21,7 +21,7 @@ import qualified Data.List as List
 import qualified Data.Map as M
 import Data.String (String)
 import Err
-import Handlers.TennisHandler (checkPasswd, getUser)
+import Handlers.TennisHandler (checkPasswd, createUser, getUser)
 import Jose.Jwt
   ( Jwt (..),
     decodeClaims,
@@ -34,6 +34,7 @@ import qualified Servant.Auth.Server as SAS
 import Servant.Server ()
 import qualified System.Random as Random
 import Types
+import Util.Email (mail)
 import qualified Web.OIDC.Client as O
 
 authHandler :: SAS.CookieSettings -> SAS.JWTSettings -> ServerT AuthApi AppM
@@ -41,6 +42,7 @@ authHandler cs jwts =
   handleLogin
     :<|> handleLoggedIn cs jwts
     :<|> handlePasswordLogin cs jwts
+    :<|> handleRegistration cs jwts
 
 redirects :: (StringConv s ByteString) => s -> AppM ()
 redirects url = throwError err302 {errHeaders = [("Location", toS url)]}
@@ -150,6 +152,7 @@ handleLoggedIn cs jwts err mcode mstate = do
         liftIO $ putText "No code param"
         forbidden "no code parameter given"
 
+-- | Called by both OIDC/OAuth2 login as well as Password login flows.
 acceptUser ::
   SAS.CookieSettings ->
   SAS.JWTSettings ->
@@ -201,9 +204,23 @@ customerFromAuthInfo authinfo = do
       { account = toS (email (authinfo :: AuthInfo)),
         apiKey = apikey,
         mail = Just (toS (email (authinfo :: AuthInfo))),
-        fullname = Just (toS (name authinfo)),
+        fullname = Just (toS (name (authinfo :: AuthInfo))),
         cPicture = Just (toS (picture authinfo))
       }
+
+handleRegistration ::
+  SAS.CookieSettings ->
+  SAS.JWTSettings ->
+  RegistrationForm ->
+  AppM (Headers '[Header "Set-Cookie" SAS.SetCookie, Header "Set-Cookie" SAS.SetCookie] UserData)
+handleRegistration cs jwt rf = do
+  let email' = email (rf :: RegistrationForm)
+  eu <- createUser (username (rf :: RegistrationForm)) (password (rf :: RegistrationForm)) email'
+  case eu of
+    Left err -> forbidden $ "Registration failed: " <> err
+    Right u -> do
+      liftIO $ Util.Email.mail email' "Welcome to CM Hacker" "Welcome"
+      acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" Nothing Nothing
 
 handlePasswordLogin ::
   SAS.CookieSettings ->

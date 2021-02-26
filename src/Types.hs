@@ -211,3 +211,14 @@ data LoginForm = LoginForm
 instance ToJSON LoginForm
 
 instance FromJSON LoginForm
+
+data RegistrationForm = RegistrationForm
+  { username :: Text,
+    password :: Text,
+    email :: Text
+  }
+  deriving (Eq, Show, Generic)
+
+instance ToJSON RegistrationForm
+
+instance FromJSON RegistrationForm

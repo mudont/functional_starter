@@ -1,9 +1,3 @@
-
-Note on 2/22/2021: 
-Opaleye User update funcitons are in place
-Need to use them to register new users and other stuff
-Elm client needs to support Registering. Reset password workflow needed too
-
 1. [ ] Merge in from other repos
     - [X] `servant-oidc` has **elm client** (with google-auth+servant)
     - [ ] `oplog-broadcast` has **websocket** push (+ auth in servant)

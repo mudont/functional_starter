@@ -2,7 +2,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main where
+module DB.Opaleye.User where
 
 import ClassyPrelude
 import Control.Arrow

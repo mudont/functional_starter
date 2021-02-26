@@ -1,14 +1,14 @@
-module GoogleButton exposing (googleButton)
+module Login.GoogleButton exposing (googleButton)
 
 import Bootstrap.Button as Button
 import Browser exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Messages exposing (..)
+import Login.Messages exposing (..)
 
 
-googleButton : Html Msg
+googleButton : Html Login.Messages.Msg
 googleButton =
     Button.linkButton [ Button.light, Button.attrs [ href "/google", height 38 ] ]
         [ div

@@ -1,50 +1,85 @@
-#!/usr/bin/env stack
--- stack script --resolver lts-17.0
-
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Main where
 
 ---------------------------------------
-import ClassyPrelude hiding (group)
+import ClassyPrelude hiding (group, poll)
 import Config
 import DB.Models
+import Data.Aeson (defaultOptions)
+import Data.Aeson.TH (deriveJSON)
 import Data.Semigroup ((<>))
 import qualified Data.Text as T
-import Database.Selda
+import Database.Selda hiding (Group)
+import Database.Selda.Backend
 import Database.Selda.PostgreSQL
 import Options.Applicative
 
 --import Options.Generic
 
+-- tables :: SqlRow t => [Table t]
+-- tables = [person]
+
 dropTables :: PGConnectInfo -> IO ()
 dropTables connInfo = withPostgreSQL connInfo $ do
   liftIO $ putStrLn "Dropping Tables"
+  dropTable user
+  dropTable site
   dropTable person
   dropTable group
   dropTable groupMember
-  dropTable site
+  dropTable permission
+  dropTable poll
+  dropTable pollChoice
+  dropTable pollVote
 
 createTables :: PGConnectInfo -> IO ()
 createTables connInfo = withPostgreSQL connInfo $ do
+  createTable user
+  createTable site
   createTable person
-  insert_
-    person
-    [ Person def "Murali" (Just "R") "Donthireddy" (Just "donthireddy@yahoo.com") (Just "646") "murali" "" def def,
-      Person def "C" (Just "M") "Raje" (Just "cmraje@yahoo.com") (Just "732") "cm" "" def def
-    ]
   createTable group
   createTable groupMember
-  createTable site
+  createTable permission
+  createTable poll
+  createTable pollChoice
+  createTable pollVote
+
+insertUsers :: PGConnectInfo -> IO ()
+insertUsers connInfo = withPostgreSQL connInfo $ do
+  ts <- liftIO getCurrentTime
+  insert_
+    user
+    [ User def "murali12" "passwd" (Just "donthireddy@yahoo.com") ts ts
+    -- Person def "C" (Just "M") "Raje" (Just "cmraje@yahoo.com") (Just "732") "cm" "" def def
+    ]
+
+getUser :: Int -> Query s (Row s User)
+getUser uid = do
+  u <- select user
+  let inp = toId uid
+   in restrict (u ! #id .== literal inp)
+  pure u
+
+insertUser :: [User] -> SeldaM b ()
+insertUser u = do
+  insert_ user u
+
+dbQuery :: SqlRow b => SeldaConnection PG -> Query PG (Row PG b) -> IO [b]
+dbQuery conn q = do
+  runSeldaT (query q) conn
 
 data Opts = Opts
   { optGlobalFlag :: !Bool,
     optConfigFile :: !Text,
     optCommand :: !Command
   }
-  deriving (Generic, Show)
+  deriving (Generic)
+
+--deriving instance Show Opts
 
 textOption :: Mod OptionFields String -> Parser T.Text
 textOption = fmap T.pack . strOption
@@ -52,13 +87,14 @@ textOption = fmap T.pack . strOption
 data Command
   = Create
   | Drop
+  | Test
 
 main :: IO ()
 main = do
   liftIO $ putStrLn "Reading Dhall config to create tables"
   (opts :: Opts) <- execParser optsParser
   cfg <- config $ optConfigFile opts
-  let connInfo =
+  let pgCfg =
         PGConnectInfo
           { pgHost = dbHost cfg,
             pgPort = fromIntegral $ dbPort cfg,
@@ -67,13 +103,27 @@ main = do
             pgUsername = dbUsername cfg,
             pgPassword = dbPassword cfg
           }
-   in case optCommand opts of
-        Create -> do
-          createTables connInfo
-          putStrLn "Created Tables"
-        Drop -> do
-          dropTables connInfo
-          putStrLn "Deleted Tables!"
+
+  conn <- pgOpen pgCfg
+  case optCommand opts of
+    Create -> do
+      createTables pgCfg
+      putStrLn "Created Tables "
+    Drop -> do
+      dropTables pgCfg
+      putStrLn "Deleted Tables!"
+    Test -> do
+      putStrLn "Testing Tables!"
+      ts <- getCurrentTime
+      runSeldaT
+        ( insertUser
+            [ User def "murali14" "passwd" (Just "mav@yahoo.com") ts ts
+            ]
+        )
+        conn
+
+      u <- dbQuery conn (getUser 1)
+      print u
   print ("global flag: " ++ show (optGlobalFlag opts))
   where
     optsParser :: ParserInfo Opts
@@ -93,7 +143,7 @@ main = do
           ( long "config" <> metavar "config-file" <> value "./config.dhall"
               <> help "Config file. defaults to ./config.dhall"
           )
-        <*> hsubparser (createCommand <> deleteCommand)
+        <*> hsubparser (createCommand <> deleteCommand <> testCommand)
     createCommand :: Mod CommandFields Command
     createCommand =
       command
@@ -105,3 +155,9 @@ main = do
       command
         "drop"
         (info (pure Drop) (progDesc "Drop all tables"))
+
+    testCommand :: Mod CommandFields Command
+    testCommand =
+      command
+        "test"
+        (info (pure Test) (progDesc "Test all tables"))

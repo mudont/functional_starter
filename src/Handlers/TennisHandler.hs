@@ -4,19 +4,20 @@ module Handlers.TennisHandler where
 
 import API.TennisApi (TennisApi)
 import AppM
-import ClassyPrelude (Int, Maybe (Just, Nothing), Text, head, null, pure, show, ($), (.))
+import ClassyPrelude hiding (asks)
 import Control.Monad.Except (MonadIO (..))
 import Control.Monad.Trans.Reader (asks)
-import DB.Models hiding (email)
-import qualified DB.Queries as Query
-import Database.Selda (Query, Row, SqlRow, query)
+import DB.Selda.CMModels hiding (email)
+import qualified DB.Selda.Queries as Query
+import Database.Selda (Query, Row, SqlRow, def, query, transaction)
 import Database.Selda.Backend (runSeldaT)
 import Database.Selda.PostgreSQL (PG)
-import DjangoPassword
+import Err
 import Protolude (putText, threadDelay, (&))
 import Servant
 import qualified Servant.Auth.Server as SAS
 import Servant.Server ()
+import Util.Crypto
 
 users :: AppM [User]
 users = dbQuery Query.allUsers
@@ -28,8 +29,8 @@ getUser un = do
     [u] -> pure u
     _ -> Nothing
 
-groups :: AppM [Group]
-groups = dbQuery Query.allGroups
+players :: AppM [Player]
+players = dbQuery Query.allPlayers
 
 dbQuery :: SqlRow b => Query PG (Row PG b) -> AppM [b]
 dbQuery q = do
@@ -41,10 +42,24 @@ checkPasswd username pswd = do
   mu <- getUser username
   pure $ case mu of
     Nothing -> Nothing
-    Just u -> if validatePassword pswd (password u) then Just u else Nothing
+    Just u -> if validatePassword pswd (password (u :: User)) then Just u else Nothing
+
+createUser :: Text -> Text -> Text -> AppM (Either Text User)
+createUser username pswd email = do
+  mu <- getUser username
+  case mu of
+    Nothing -> do
+      ts <- liftIO getCurrentTime
+      conn <- asks dbConn
+      hashed <- liftIO $ makeDjangoPassword pswd
+
+      let u = User def username hashed Nothing "" "" (Just email) True True False ts
+      liftIO $ Query.insertUserPlayer conn u
+      pure $ Right u
+    Just _ -> pure $ Left $ "User " <> username <> " exists"
 
 tennisHandler :: ServerT TennisApi AppM
 tennisHandler =
   users
     :<|> getUser
-    :<|> groups
+    :<|> players

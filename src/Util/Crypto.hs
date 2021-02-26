@@ -1,6 +1,6 @@
 {-# LANGUAGE PackageImports #-}
 
-module DjangoPassword where
+module Util.Crypto where
 
 import "fastpbkdf2" Crypto.KDF.PBKDF2
 import "cryptonite" Crypto.Random

@@ -4,7 +4,7 @@ import ClassyPrelude
 import Servant.API
 import Servant.Auth.Server
 import Servant.HTML.Blaze
-import Types (LoginForm, UserData)
+import Types (LoginForm, RegistrationForm, UserData)
 
 type APIGoogleAuth = "google" :> Get '[JSON] NoContent
 
@@ -16,5 +16,9 @@ type APIGoogleAuthCb =
 
 type AuthApi =
   APIGoogleAuth -- redirect User to the OpenID Provider
+  -- Google auth flow
     :<|> APIGoogleAuthCb
+    -- login with password
     :<|> "login" :> ReqBody '[JSON] LoginForm :> Post '[JSON] (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] UserData)
+    -- Register new user
+    :<|> "register" :> ReqBody '[JSON] RegistrationForm :> Post '[JSON] (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] UserData)
