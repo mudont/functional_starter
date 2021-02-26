@@ -8,3 +8,6 @@
 [data-elm-hot="true"] {
   height: inherit;
 }
+.container {
+  padding: 0;
+}
