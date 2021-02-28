@@ -58,3 +58,11 @@ allUsers = select user
 
 allPlayers :: Query s (Row s Player)
 allPlayers = select player
+
+-- Join users and players
+allUsersPlayers :: Query s (Row s User :*: Row s Player)
+allUsersPlayers = do
+  u <- select user
+  p <- select player
+  restrict (u ! #id .== p ! #user_id)
+  return (u :*: p)

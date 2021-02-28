@@ -7,8 +7,10 @@ import API.WsApi (WsApi)
 import Servant.API
 
 type API auths =
-  AuthApi
-    :<|> TennisApi
-    :<|> RajniApi auths -- Some fun Rajni/Chuck Norris "facts". Nothing more
+  "api"
+    :> ( AuthApi
+           :<|> TennisApi
+           :<|> RajniApi auths -- Some fun Rajni/Chuck Norris "facts". Nothing more
+       )
     :<|> WsApi
     :<|> Raw

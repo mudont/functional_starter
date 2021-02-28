@@ -12,7 +12,7 @@ type APIGoogleAuthCb =
   "google" :> "cb" :> QueryParam "error" Text
     :> QueryParam "code" Text
     :> QueryParam "state" Text
-    :> Get '[HTML] (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] UserData)
+    :> Get '[JSON] (Headers '[Header "Set-Cookie" SetCookie, Header "Set-Cookie" SetCookie] UserData)
 
 type AuthApi =
   APIGoogleAuth -- redirect User to the OpenID Provider

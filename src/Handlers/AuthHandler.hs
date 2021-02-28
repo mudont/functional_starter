@@ -20,6 +20,7 @@ import Data.List (head)
 import qualified Data.List as List
 import qualified Data.Map as M
 import Data.String (String)
+import Data.Text.Lazy (fromStrict)
 import Err
 import Handlers.TennisHandler (checkPasswd, createUser, getUser)
 import Jose.Jwt
@@ -163,7 +164,7 @@ acceptUser cs jwts user = do
   jwt <- liftIO $ SAS.makeJWT user jwts Nothing
   let accessToken = either (const ("" :: Text)) toS jwt
   putText $ "access-token: " <> accessToken
-  let user' = user {accessToken = Just accessToken}
+  let user' = user {token = Just accessToken}
   mApplyCookies <- liftIO $ SAS.acceptLogin cs jwts user'
   case mApplyCookies of
     Nothing -> do
@@ -215,11 +216,12 @@ handleRegistration ::
   AppM (Headers '[Header "Set-Cookie" SAS.SetCookie, Header "Set-Cookie" SAS.SetCookie] UserData)
 handleRegistration cs jwt rf = do
   let email' = email (rf :: RegistrationForm)
-  eu <- createUser (username (rf :: RegistrationForm)) (password (rf :: RegistrationForm)) email'
+  let un = username (rf :: RegistrationForm)
+  eu <- createUser un (password (rf :: RegistrationForm)) email'
   case eu of
     Left err -> forbidden $ "Registration failed: " <> err
     Right u -> do
-      liftIO $ Util.Email.mail email' "Welcome to CM Hacker" "Welcome"
+      liftIO $ Util.Email.mail email' "Welcome to CM Hackers" (fromStrict $ "Hi " <> un <> ", Welcome")
       acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" Nothing Nothing
 
 handlePasswordLogin ::
@@ -245,12 +247,12 @@ handleOIDCLogin authInfo = do
     customerToUser :: Customer -> UserData
     customerToUser c =
       UserData
-        { userId = toS (account c),
+        { username = toS (account c),
           userSecret = toS (apiKey c),
           redirectUrl = Nothing,
           localStorageKey = "api-key",
-          uPicture = toS $ fromMaybe "" (cPicture c),
-          accessToken = Nothing
+          image = toS $ fromMaybe "" (cPicture c),
+          token = Nothing
         }
 
 --

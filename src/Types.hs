@@ -1,6 +1,22 @@
 module Types where
 
 import ClassyPrelude
+  ( Bool,
+    ByteString,
+    Eq,
+    Generic,
+    IORef,
+    Map,
+    Maybe,
+    Monad (return),
+    Ord,
+    Semigroup ((<>)),
+    Show,
+    String,
+    Text,
+    fromMaybe,
+    ($),
+  )
 import Crypto.Random.AESCtr (AESRNG, makeSystem)
 import Crypto.Random.API (CPRG, cprgGenBytes)
 import Data.Aeson
@@ -83,12 +99,12 @@ instance JSON.ToJSON AuthInfo where
       ]
 
 data UserData = UserData
-  { userId :: Text,
+  { username :: Text,
     userSecret :: Text,
     localStorageKey :: Text,
-    uPicture :: Text,
+    image :: Text,
     redirectUrl :: Maybe Text,
-    accessToken :: Maybe Text
+    token :: Maybe Text
   }
   deriving (Show, Eq, Ord, Generic)
 
@@ -111,18 +127,18 @@ instance ToMarkup UserData where
       H.title "Logged In"
     H.body $ do
       H.h1 "Logged In"
-      H.p (H.toHtml ("Successful login with id " <> userId))
+      H.p (H.toHtml ("Successful login with id " <> username))
       H.script
         ( H.toHtml
             ( "localStorage.setItem('" <> localStorageKey <> "','" <> userSecret <> "');"
                 <> "localStorage.setItem('user-id','"
-                <> userId
+                <> username
                 <> "');"
                 <> "localStorage.setItem('access-token','"
-                <> fromMaybe "" accessToken
+                <> fromMaybe "" token
                 <> "');"
                 <> "localStorage.setItem('picture','"
-                <> uPicture
+                <> image
                 <> "');"
                 <> "window.location='"
                 <> fromMaybe "/index.html" redirectUrl
