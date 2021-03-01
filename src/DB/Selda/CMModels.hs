@@ -56,3 +56,39 @@ player :: Table Player
 player = table "tennis_player" [#id :- autoPrimary]
 
 $(deriveJSON defaultOptions ''Player)
+
+-- UserPlayer might be useless unless I can figure out how to use it
+-- and get past the typechecker
+data UserPlayer = UserPlayer
+  { id :: ID User,
+    username :: Text,
+    password :: Text,
+    first_name :: Text,
+    last_name :: Text,
+    email :: Maybe Text,
+    mobile_phone :: Maybe Text,
+    home_phone :: Maybe Text,
+    work_phone :: Maybe Text,
+    format_preference :: Maybe Text,
+    social_user_id :: Maybe Text,
+    is_staff :: Bool,
+    is_active :: Bool,
+    is_superuser :: Bool,
+    last_login :: Maybe UTCTime,
+    date_joined :: UTCTime
+  }
+  deriving (Show, Generic)
+
+instance SqlRow UserPlayer
+
+$(deriveJSON defaultOptions ''UserPlayer)
+
+data Tmp = Tmp
+  { tmp_id :: ID User,
+    tmp_username :: Text
+  }
+  deriving (Show, Generic)
+
+instance SqlRow Tmp
+
+$(deriveJSON defaultOptions ''Tmp)

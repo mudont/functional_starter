@@ -2,6 +2,7 @@ module DB.Selda.Queries where
 
 import ClassyPrelude hiding (group)
 import DB.Selda.CMModels
+import qualified DB.Selda.CMModels as CMM
 import Data.Fixed (Pico)
 import Data.Time
 import Database.Selda hiding (Group)
@@ -18,12 +19,18 @@ mkUTCTime (year, mon, day) (hour, min, sec) =
     (timeOfDayToTime (TimeOfDay hour min sec))
 
 --------------------
--- QUERIES
+-- QUERIES - Just datastructures. The IO stuff should be moved to Handler.
 --------------------
 getUser :: Text -> Query s (Row s User)
 getUser username = do
   u <- select user
   restrict (u ! #username .== literal username)
+  pure u
+
+getUserByEmail :: Text -> Query s (Row s User)
+getUserByEmail email = do
+  u <- select user
+  restrict (u ! #email .== literal (Just email))
   pure u
 
 insertUserQ :: User -> SeldaM PG (ID User)
@@ -60,6 +67,7 @@ allPlayers :: Query s (Row s Player)
 allPlayers = select player
 
 -- Join users and players
+
 allUsersPlayers :: Query s (Row s User :*: Row s Player)
 allUsersPlayers = do
   u <- select user

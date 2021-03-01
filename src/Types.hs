@@ -23,6 +23,8 @@ import Data.Aeson
 import qualified Data.Aeson as JSON
 import qualified Data.Aeson.Types as AeT
 import Data.String.Conv
+import Data.String.Interpolation
+import qualified Data.Text.Lazy as LT
 import Network.HTTP.Client
   ( Manager,
     newManager,
@@ -98,8 +100,15 @@ instance JSON.ToJSON AuthInfo where
         "picture" JSON..= (toS p :: Text)
       ]
 
+modUserName :: Text -> UserData -> UserData
+modUserName un uD = uD {username = un}
+
+getUserName :: UserData -> Text
+getUserName = username
+
 data UserData = UserData
   { username :: Text,
+    email :: Text,
     userSecret :: Text,
     localStorageKey :: Text,
     image :: Text,
@@ -130,20 +139,17 @@ instance ToMarkup UserData where
       H.p (H.toHtml ("Successful login with id " <> username))
       H.script
         ( H.toHtml
-            ( "localStorage.setItem('" <> localStorageKey <> "','" <> userSecret <> "');"
-                <> "localStorage.setItem('user-id','"
-                <> username
-                <> "');"
-                <> "localStorage.setItem('access-token','"
-                <> fromMaybe "" token
-                <> "');"
-                <> "localStorage.setItem('picture','"
-                <> image
-                <> "');"
-                <> "window.location='"
-                <> fromMaybe "/index.html" redirectUrl
-                <> "';" -- redirect the user to /
-            )
+            -- localStorage.store = "{"user":{"username":"murali","token":"eyJ...PLQ","image":""}}"
+            [str| 
+                localStorage.store = JSON.stringify({user: {
+                  username: '$username$',
+                  token: '$fromMaybe "" token$',
+                  image: '$image$',
+                  email: '$email$'
+                }});
+
+                window.location='$fromMaybe "/index.html" redirectUrl$';
+                |]
         )
 
 type APIKey = ByteString

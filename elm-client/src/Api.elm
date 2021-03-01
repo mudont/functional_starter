@@ -1,7 +1,7 @@
 port module Api exposing (
     Cred, addServerError, application, decodeErrors, delete, get, login, logout,
     post, put, register, settings, storeCredWith, username, viewerChanges,
-    sendWsMessage, wsMessageReceiver)
+    sendWsMessage, wsMessageReceiver, googleLogin)
 
 {-| This module is responsible for communicating to the Conduit API.
 
@@ -236,6 +236,10 @@ delete url cred body decoder toMsg =
 login : Http.Body -> Decoder (Cred -> a) -> (Result Error a -> msg) -> Cmd msg
 login body decoder toMsg =
     post Endpoint.login Nothing body (decoderFromCred decoder) toMsg
+
+googleLogin : Decoder (Cred -> a) -> (Result Error a -> msg) -> Cmd msg
+googleLogin decoder toMsg =
+    get Endpoint.googleLogin Nothing  (decoderFromCred decoder) toMsg
 
 
 register : Http.Body -> Decoder (Cred -> a) -> (Result Error a -> msg) -> Cmd msg

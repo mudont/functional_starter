@@ -17,13 +17,13 @@ import Servant.Server ()
 
 server :: SAS.CookieSettings -> SAS.JWTSettings -> ServerT (API auths) AppM
 server cs jwts =
-  apiHandler
+  authHandler cs jwts
+    :<|> apiHandler
     :<|> wsHandler
     :<|> serveDirectoryWith settings
   where
     apiHandler =
-      authHandler cs jwts
-        :<|> tennisHandler
+      tennisHandler
         :<|> rajniServer
 
     settings = (defaultFileServerSettings "./elm-client/build") {ssRedirectToIndex = True}

@@ -1,4 +1,4 @@
-module Asset exposing (Image, defaultAvatar, error, loading, hackersLogo, src)
+module Asset exposing (Image, defaultAvatar, error, loading, hackersLogo, googleLogo, src)
 
 {-| Assets, such as images, videos, and audio. (We only have images for now.)
 
@@ -40,7 +40,7 @@ image : String -> Image
 image filename =
     Image ("/assets/images/" ++ filename)
 
-
+googleLogo = Image "https://www.google.com/s2/favicons?sz=32&domain_url=google.com"
 
 -- USING IMAGES
 

@@ -15,8 +15,8 @@ import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
 import Viewer exposing (Viewer)
-
-
+import Bootstrap.Button as Button
+import Asset exposing(src, googleLogo)
 
 -- MODEL
 
@@ -59,7 +59,7 @@ type Problem
 
 type alias Form =
     { username: String
-    , email : String
+   -- , email : String
     , password : String
     }
 
@@ -70,7 +70,7 @@ init session =
       , problems = []
       , form =
             { username = ""
-            , email = ""
+           -- , email = ""
             , password = ""
             }
       }
@@ -122,7 +122,7 @@ viewProblem problem =
 viewForm : Form -> Html Msg
 viewForm form =
     Html.form [ onSubmit SubmittedForm ]
-        [ fieldset [ class "form-group" ]
+        [ {-fieldset [ class "form-group" ]
             [ input
                 [ class "form-control form-control-lg"
                 , placeholder "Email"
@@ -131,7 +131,7 @@ viewForm form =
                 ]
                 []
             ]
-        , fieldset [ class "form-group" ]
+        , -} fieldset [ class "form-group" ]
                      [ input
                          [ class "form-control form-control-lg"
                          , placeholder "Username"
@@ -150,6 +150,14 @@ viewForm form =
                 ]
                 []
             ]
+        , Button.linkButton [ Button.light, Button.attrs [ href "/google"] ]
+                  [ div
+                      [ class "left" ]
+                      [ img [ Asset.src googleLogo, height 25, width 25, style "margin" "0", alt "G" ] []
+                      , text "  "
+                      , text "Google Sign up/Sign in"
+                      ]
+                  ]
         , button [ class "btn btn-lg btn-primary pull-xs-right" ]
             [ text "Sign in" ]
         ]
@@ -161,8 +169,9 @@ viewForm form =
 
 type Msg
     = SubmittedForm
+    | GoogleSignIn
     | EnteredUsername String
-    | EnteredEmail String
+    --| EnteredEmail String
     | EnteredPassword String
     | CompletedLogin (Result Http.Error Viewer)
     | GotSession Session
@@ -183,11 +192,13 @@ update msg model =
                     , Cmd.none
                     )
 
+        GoogleSignIn -> (model, googleLogin)
+
         EnteredUsername username ->
             updateForm (\form -> { form | username = username }) model
-
-        EnteredEmail email ->
-            updateForm (\form -> { form | email = email }) model
+        --
+        --EnteredEmail email ->
+        --    updateForm (\form -> { form | email = email }) model
 
         EnteredPassword password ->
             updateForm (\form -> { form | password = password }) model
@@ -245,14 +256,14 @@ type TrimmedForm
 -}
 type ValidatedField
     = Username
-    | Email
+    --| Email
     | Password
 
 
 fieldsToValidate : List ValidatedField
 fieldsToValidate =
     [ Username
-    , Email
+    --, Email
     , Password
     ]
 
@@ -283,13 +294,13 @@ validateField (Trimmed form) field =
 
                 else
                     []
-
-            Email ->
-                if String.isEmpty form.email then
-                    [ "email can't be blank." ]
-
-                else
-                    []
+            --
+            --Email ->
+            --    if String.isEmpty form.email then
+            --        [ "email can't be blank." ]
+            --
+            --    else
+            --        []
 
             Password ->
                 if String.isEmpty form.password then
@@ -306,7 +317,7 @@ trimFields : Form -> TrimmedForm
 trimFields form =
     Trimmed
         { username = String.trim form.username
-        , email = String.trim form.email
+        --, email = String.trim form.email
         , password = String.trim form.password
         }
 
@@ -321,7 +332,7 @@ login (Trimmed form) =
         user =
             Encode.object
                 [ ( "username", Encode.string form.username )
-                , ( "email", Encode.string form.email )
+                --, ( "email", Encode.string form.email )
                 , ( "password", Encode.string form.password )
                 ]
 
@@ -330,6 +341,8 @@ login (Trimmed form) =
     in
     Api.login body Viewer.decoder CompletedLogin
 
+googleLogin : Cmd Msg
+googleLogin  = Api.googleLogin  Viewer.decoder CompletedLogin
 
 
 -- EXPORT

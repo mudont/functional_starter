@@ -48,7 +48,7 @@ view maybeViewer page { title, content } =
 
 viewHeader : Page -> Maybe Viewer -> Html msg
 viewHeader page maybeViewer =
-    nav [ class "navbar navbar-light" ]
+    nav [ class "navbar  navbar-expand-md navbar-light" ]
         [ div [ class "container" ]
             [ a [ class "navbar-brand", Route.href Route.Home ]
                 [ img
@@ -61,7 +61,7 @@ viewHeader page maybeViewer =
                       []
                 , text "CM Hackers"
                 ]
-            , ul [ class "nav navbar-nav pull-xs-right" ] <|
+            , ul [ class "nav navbar-nav pull-sm-right" ] <|
                 navbarLink page Route.Home [ text "Home" ]
                     :: viewMenu page maybeViewer
             ]

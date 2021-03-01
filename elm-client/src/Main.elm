@@ -28,6 +28,7 @@ import Time
 import Url exposing (Url)
 import Username exposing (Username)
 import Viewer exposing (Viewer)
+import Log exposing (..)
 
 type Model
     = Redirect Session
@@ -183,21 +184,29 @@ update msg model =
                             -- fragment-based routing, this entire
                             -- `case url.fragment of` expression this comment
                             -- is inside would be unnecessary.
-                            ( model, Cmd.none )
+                            ( model, Cmd.batch [
+                                    Log.dbg "Internal link clicked. No fragment"
+                                  , Nav.load (Url.toString url)
+                                  ])
 
                         Just _ ->
                             ( model
-                            , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                            , Cmd.batch [
+                                Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                              , Log.dbg <| "Internal Link clicked: " ++ Url.toString url
+                              ]
                             )
 
                 Browser.External href ->
                     ( model
-                    , Nav.load href
+                    , Cmd.batch [ Nav.load href
+                                , Log.dbg <| "Ext Link clicked: " ++ href
+                                ]
                     )
 
         ( ChangedUrl url, _ ) ->
-            changeRouteTo (Route.fromUrl url) model
-
+            let (m, cmd) = changeRouteTo (Route.fromUrl url) model
+            in (m, Cmd.batch [Debug.log "ChangedUrl" cmd, Log.dbg <| "Url changed to " ++ Url.toString url])
         ( GotSettingsMsg subMsg, Settings settings ) ->
             Settings.update subMsg settings
                 |> updateWith Settings GotSettingsMsg model

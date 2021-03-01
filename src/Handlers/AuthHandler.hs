@@ -6,10 +6,11 @@ import API.AuthApi
 import AppM
 import ClassyPrelude (Applicative (pure), ByteString, Either (Left, Right), Eq ((==)), IO, Int, IsSequence (drop, take), IsString (fromString), Map, Maybe (Just, Nothing), Num ((+), (-)), Ord, Show, Text, Utf8 (decodeUtf8, encodeUtf8), const, either, fromMaybe, length, show, swap, ($), (.), (<$>), (<>))
 import Control.Monad
-import Control.Monad.Except
+import Control.Monad.Except (MonadError (throwError), MonadIO (..))
 import Control.Monad.Trans.Reader (asks)
 import Crypto.Random.API (CPRG, cprgGenBytes)
 import DB.Selda.CMModels
+import qualified DB.Selda.Queries as Query
 import "base64-bytestring" Data.ByteString.Base64.URL (encode)
 import Data.IORef
   ( IORef,
@@ -22,12 +23,12 @@ import qualified Data.Map as M
 import Data.String (String)
 import Data.Text.Lazy (fromStrict)
 import Err
-import Handlers.TennisHandler (checkPasswd, createUser, getUser)
+import Handlers.TennisHandler (checkPasswd, createUser, ensureDBUser)
 import Jose.Jwt
   ( Jwt (..),
     decodeClaims,
   )
-import Protolude (putText, (&))
+import Protolude (print, putText, (&))
 import Protolude.Conv
 import Servant
 import Servant.Auth ()
@@ -138,6 +139,7 @@ handleLoggedIn cs jwts err mcode mstate = do
         -- putText . show . O.otherClaims . O.idToken $ tokens
         let jwt = unJwt . O.idTokenJwt $ tokens
             eAuthInfo = decodeClaims jwt :: Either O.JwtError (O.JwtHeader, AuthInfo)
+        liftIO $ print "!!!!!! !!!!!!!!!!!!!! Checking auth "
         case eAuthInfo of
           Left jwtErr -> forbidden $ fromString $ "JWT decode/check problem: " <> show jwtErr
           Right (_, authInfo) ->
@@ -147,7 +149,10 @@ handleLoggedIn cs jwts err mcode mstate = do
                 case eUser of
                   Left err -> forbidden $ fromString $ "Cant get user: " <> show err
                   Right user -> do
-                    acceptUser cs jwts user
+                    liftIO $ print "!!!!!! !!!!!!!!!!!!!! Authed user "
+                    persistentUser <- ensureDBUser user
+                    -- !!!!!!!!!  OIDC Auth successful !!!!!!!!! --
+                    acceptUser cs jwts persistentUser
               else forbidden "Please verify your email"
       Nothing -> do
         liftIO $ putText "No code param"
@@ -217,12 +222,13 @@ handleRegistration ::
 handleRegistration cs jwt rf = do
   let email' = email (rf :: RegistrationForm)
   let un = username (rf :: RegistrationForm)
-  eu <- createUser un (password (rf :: RegistrationForm)) email'
+  eu <- createUser un (Just $ password (rf :: RegistrationForm)) email'
   case eu of
     Left err -> forbidden $ "Registration failed: " <> err
     Right u -> do
       liftIO $ Util.Email.mail email' "Welcome to CM Hackers" (fromStrict $ "Hi " <> un <> ", Welcome")
-      acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" Nothing Nothing
+      -- !!!!!!!!!!!!!!!! ACCEPT REGISTRATION !!!!!!!!!!!!!!!
+      acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" "" Nothing Nothing
 
 handlePasswordLogin ::
   SAS.CookieSettings ->
@@ -233,7 +239,8 @@ handlePasswordLogin cs jwt lf = do
   mu <- checkPasswd (username (lf :: LoginForm)) (password (lf :: LoginForm))
   case mu of
     Nothing -> forbidden $ "Invalid password for " <> username (lf :: LoginForm)
-    Just u -> acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" Nothing Nothing
+    -- !!!!!!!!!!!!!!!! ACCEPT PASSWORD !!!!!!!!!!!!!!!
+    Just u -> acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" "" Nothing Nothing
 
 type LoginHandler = AuthInfo -> IO (Either Text UserData)
 
@@ -248,6 +255,7 @@ handleOIDCLogin authInfo = do
     customerToUser c =
       UserData
         { username = toS (account c),
+          email = fromMaybe "" (Types.mail c),
           userSecret = toS (apiKey c),
           redirectUrl = Nothing,
           localStorageKey = "api-key",

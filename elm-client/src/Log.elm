@@ -1,4 +1,4 @@
-module Log exposing (error)
+port module Log exposing (error, dbg, info, warn)
 
 {-| This is a placeholder API for how we might do logging through
 some service like <http://rollbar.com> (which is what we use at work).
@@ -13,8 +13,16 @@ a placeholder anyway, I didn't bother making this function accept actual
 diagnostic info, authentication tokens, etc.)
 
 -}
+port consoleDbg : String -> Cmd msg
+port consoleErr : String -> Cmd msg
+port consoleInfo : String -> Cmd msg
+port consoleWarn : String -> Cmd msg
 
-
-error : Cmd msg
-error =
-    Cmd.none
+dbg : String -> Cmd msg
+dbg = consoleDbg
+error : String -> Cmd msg
+error = consoleErr
+info : String -> Cmd msg
+info = consoleInfo
+warn : String -> Cmd msg
+warn = consoleWarn

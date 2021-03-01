@@ -1,4 +1,5 @@
-module Api.Endpoint exposing (Endpoint, follow, login, register, profiles, request, user, users)
+module Api.Endpoint exposing (Endpoint, follow, login, googleLogin, register,
+                              profiles, request, user, users)
 
 import Http
 import Url.Builder exposing (QueryParameter)
@@ -46,12 +47,14 @@ unwrap : Endpoint -> String
 unwrap (Endpoint str) =
     str
 
-
+prodUrl = "https://mariandrive"
+devUrl = "http://localhost:8080"
+severUrl = devUrl
 url : List String -> List QueryParameter -> Endpoint
 url paths queryParams =
     -- NOTE: Url.Builder takes care of percent-encoding special URL characters.
     -- See https://package.elm-lang.org/packages/elm/url/latest/Url#percentEncode
-    Url.Builder.crossOrigin "http://localhost:8080"
+    Url.Builder.crossOrigin severUrl
         ("api":: paths)
         queryParams
         |> Endpoint
@@ -63,11 +66,14 @@ url paths queryParams =
 
 login : Endpoint
 login =
-    url [ "login" ] []
+    Url.Builder.crossOrigin severUrl ["login"] [] |> Endpoint -- url [ "login" ] []
+
+googleLogin : Endpoint
+googleLogin = Url.Builder.crossOrigin severUrl ["google"] [] |> Endpoint
 
 register : Endpoint
 register =
-    url [ "register" ] []
+    Url.Builder.crossOrigin severUrl ["register"] [] |> Endpoint -- url [ "register" ] []
 
 
 user : Endpoint

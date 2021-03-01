@@ -5,11 +5,15 @@ import * as serviceWorker from './serviceWorker';
 console.log('DBG in JS startup')
 var storageKey = "store";
 var flags = localStorage.getItem(storageKey);
+
+// -- ELM APP
+
 var app = Elm.Main.init({flags: flags});
 
 console.log('DBG Elm initialized')
 
 // -- LOCAL STORAGE
+
 // Setup subscriptions to listen to the Elm App's requests
 // to set/remove localStorage
 function updateStorage(state) {
@@ -36,7 +40,29 @@ window.addEventListener("storage", function(event) {
         }
     }, false
 );
+
+// -- CONSOLE LOGGING
+
 console.log('DBG local storage is set up now');
+app.ports.consoleErr && app.ports.consoleErr.subscribe(function (msg) {
+    var ts = new Date().toISOString();
+    console.error(ts + ' ' + msg);
+});
+app.ports.consoleWarn && app.ports.consoleWarn.subscribe(function (msg) {
+    var ts = new Date().toISOString();
+    console.warn(ts + ' ' + msg);
+});
+app.ports.consoleInfo && app.ports.consoleInfo.subscribe(function (msg) {
+    var ts = new Date().toISOString();
+    console.info(ts + ' ' + msg);
+});
+app.ports.consoleDbg && app.ports.consoleDbg.subscribe(function (msg) {
+    var ts = new Date().toISOString();
+    console.debug(ts + ' ' + msg);
+});
+
+// -- SERVICE WORKER
+
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

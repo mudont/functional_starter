@@ -94,6 +94,7 @@ dependencies:
   - http-client
   - http-client-tls
   - http-types
+  - Interpolation
   - jose
   - jose-jwt
   - katip

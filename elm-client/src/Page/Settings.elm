@@ -298,7 +298,7 @@ updateForm transform model =
             ( { model | status = Loaded (transform form) }, Cmd.none )
 
         _ ->
-            ( model, Log.error )
+            ( model, Log.error "Bad Settings model Loaded status")
 
 
 
