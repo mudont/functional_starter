@@ -1,13 +1,15 @@
 module DB.Selda.Queries where
 
-import ClassyPrelude hiding (group)
-import DB.Selda.CMModels
-import qualified DB.Selda.CMModels as CMM
-import Data.Fixed (Pico)
-import Data.Time
-import Database.Selda hiding (Group)
-import Database.Selda.Backend
-import Database.Selda.PostgreSQL
+import           ClassyPrelude             hiding (group, id)
+import           DB.Selda.CMModels
+import qualified DB.Selda.CMModels         as CMM
+import           Data.Fixed                (HasResolution (resolution), Pico)
+import           Data.Time
+import           Database.Selda            hiding (Group)
+import           Database.Selda.Backend
+import           Database.Selda.PostgreSQL (PG)
+import           Types
+import           Util.Crypto               (makeDjangoPassword)
 
 mkUTCTime ::
   (Integer, Int, Int) ->
@@ -74,3 +76,54 @@ allUsersPlayers = do
   p <- select player
   restrict (u ! #id .== p ! #user_id)
   return (u :*: p)
+
+userInfo :: Text -> Query s (Row s User :*: Row s Player)
+userInfo thisUser = do
+  u :*: p <- allUsersPlayers
+  restrict (u ! #username .== literal thisUser)
+  return (u :*: p)
+
+updateUserInfo :: ContactInfo -> SeldaM PG ()
+updateUserInfo ci = do
+  hash <- liftIO $ makeDjangoPassword (password (ci::ContactInfo))
+  update_ user (\u -> u ! #username .== literal (username (ci::ContactInfo)) )
+               (\u -> u `with` [
+                 #first_name := literal (firstName ci),
+                 #last_name := literal (lastName ci),
+                 #email := literal (Just $ email (ci::ContactInfo)),
+                 #password := literal hash
+               ])
+updatePlayerInfo :: ContactInfo -> SeldaM PG ()
+updatePlayerInfo ci = do
+  [u] <- query $ getUser (username (ci::ContactInfo))
+  update_ player (\p -> p ! #user_id .== literal (id (u::User)) )
+               (\u -> u `with` [
+                 #mobile_phone := literal (Just $ mobilePhone ci),
+                 #home_phone := literal (Just $ homePhone ci),
+                 #work_phone := literal (Just $ workPhone ci)
+               ])
+updateProfile :: ContactInfo -> SeldaM PG ()
+updateProfile ci = do
+  transaction $ do
+    updateUserInfo ci
+    updatePlayerInfo ci
+
+-- Below is just playing around.
+-- can be deleted
+
+allUsersPlayers' :: Query s (Row s User, Row s Player)
+allUsersPlayers' = do
+  u <- select user
+  p <- select player
+  restrict (u ! #id .== p ! #user_id)
+  return (u, p)
+
+aUP' :: SeldaConnection PG -> IO [User :*: Player]
+aUP' conn = do
+  res::[User :*: Player] <- runSeldaT (query allUsersPlayers ) conn
+  print res
+  case res of
+    [u :*: _p] -> print (first_name (u::User))
+    _          -> print (23.33 :: Double)
+  -- let u = fst res
+  return res

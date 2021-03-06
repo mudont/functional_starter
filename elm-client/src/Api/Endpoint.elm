@@ -47,7 +47,7 @@ unwrap : Endpoint -> String
 unwrap (Endpoint str) =
     str
 
-prodUrl = "https://mariandrive"
+prodUrl = "https://mariandrive.com"
 devUrl = "http://localhost:8080"
 severUrl = devUrl
 url : List String -> List QueryParameter -> Endpoint

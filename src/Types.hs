@@ -1,53 +1,36 @@
 module Types where
 
-import ClassyPrelude
-  ( Bool,
-    ByteString,
-    Eq,
-    Generic,
-    IORef,
-    Map,
-    Maybe,
-    Monad (return),
-    Ord,
-    Semigroup ((<>)),
-    Show,
-    String,
-    Text,
-    fromMaybe,
-    ($),
-  )
-import Crypto.Random.AESCtr (AESRNG, makeSystem)
-import Crypto.Random.API (CPRG, cprgGenBytes)
-import Data.Aeson
-import qualified Data.Aeson as JSON
-import qualified Data.Aeson.Types as AeT
-import Data.String.Conv
-import Data.String.Interpolation
-import qualified Data.Text.Lazy as LT
-import Network.HTTP.Client
-  ( Manager,
-    newManager,
-  )
-import Network.HTTP.Client.TLS
-  ( tlsManagerSettings,
-  )
-import Network.Wai
-import Network.Wai.Handler.Warp as Warp
-import Network.Wai.Middleware.Cors
-import Network.Wai.Middleware.RequestLogger
-  ( OutputFormat (CustomOutputFormatWithDetails),
-    RequestLoggerSettings (autoFlush, destination, outputFormat),
-    mkRequestLogger,
-  )
-import Network.Wai.Middleware.RequestLogger.JSON
-import Servant
-import Servant.Auth.JWT
-import Text.Blaze
-import Text.Blaze.Html5 as H
-import Text.Blaze.Html5.Attributes as HA
-import Text.RawString.QQ
-import qualified Web.OIDC.Client as O
+import           ClassyPrelude                             (Bool, ByteString,
+                                                            Eq, Generic, IORef,
+                                                            Map, Maybe,
+                                                            Monad (return), Ord,
+                                                            Semigroup ((<>)),
+                                                            Show, String, Text,
+                                                            fromMaybe, ($))
+import           Crypto.Random.AESCtr                      (AESRNG, makeSystem)
+import           Crypto.Random.API                         (CPRG, cprgGenBytes)
+import           Data.Aeson
+import qualified Data.Aeson                                as JSON
+import qualified Data.Aeson.Types                          as AeT
+import           Data.String.Conv
+import           Data.String.Interpolation
+import qualified Data.Text.Lazy                            as LT
+import           Network.HTTP.Client                       (Manager, newManager)
+import           Network.HTTP.Client.TLS                   (tlsManagerSettings)
+import           Network.Wai
+import           Network.Wai.Handler.Warp                  as Warp
+import           Network.Wai.Middleware.Cors
+import           Network.Wai.Middleware.RequestLogger      (OutputFormat (CustomOutputFormatWithDetails),
+                                                            RequestLoggerSettings (autoFlush, destination, outputFormat),
+                                                            mkRequestLogger)
+import           Network.Wai.Middleware.RequestLogger.JSON
+import           Servant
+import           Servant.Auth.JWT
+import           Text.Blaze
+import           Text.Blaze.Html5                          as H
+import           Text.Blaze.Html5.Attributes               as HA
+import           Text.RawString.QQ
+import qualified Web.OIDC.Client                           as O
 
 --
 -- Data types
@@ -56,29 +39,29 @@ import qualified Web.OIDC.Client as O
 type SessionStateMap = Map Text (O.State, O.Nonce)
 
 data OIDCConf = OIDCConf
-  { redirectUri :: ByteString,
-    clientId :: ByteString,
+  { redirectUri    :: ByteString,
+    clientId       :: ByteString,
     clientPassword :: ByteString
   }
   deriving (Show, Eq)
 
 data OIDCEnv = OIDCEnv
-  { oidc :: O.OIDC,
-    mgr :: Manager,
-    ssm :: IORef SessionStateMap,
-    cprg :: IORef AESRNG,
-    prov :: O.Provider,
-    redirectUri :: ByteString,
-    clientId :: ByteString,
+  { oidc           :: O.OIDC,
+    mgr            :: Manager,
+    ssm            :: IORef SessionStateMap,
+    cprg           :: IORef AESRNG,
+    prov           :: O.Provider,
+    redirectUri    :: ByteString,
+    clientId       :: ByteString,
     clientPassword :: ByteString
   }
 
 -- | @AuthInfo@
 data AuthInfo = AuthInfo
-  { email :: Text,
+  { email         :: Text,
     emailVerified :: Bool,
-    name :: Text,
-    picture :: Text
+    name          :: Text,
+    picture       :: Text
   }
   deriving (Eq, Show, Generic)
 
@@ -107,13 +90,13 @@ getUserName :: UserData -> Text
 getUserName = username
 
 data UserData = UserData
-  { username :: Text,
-    email :: Text,
-    userSecret :: Text,
+  { username        :: Text,
+    email           :: Text,
+    userSecret      :: Text,
     localStorageKey :: Text,
-    image :: Text,
-    redirectUrl :: Maybe Text,
-    token :: Maybe Text
+    image           :: Text,
+    redirectUrl     :: Maybe Text,
+    token           :: Maybe Text
   }
   deriving (Show, Eq, Ord, Generic)
 
@@ -140,7 +123,7 @@ instance ToMarkup UserData where
       H.script
         ( H.toHtml
             -- localStorage.store = "{"user":{"username":"murali","token":"eyJ...PLQ","image":""}}"
-            [str| 
+            [str|
                 localStorage.store = JSON.stringify({user: {
                   username: '$username$',
                   token: '$fromMaybe "" token$',
@@ -159,9 +142,9 @@ type Account = Text
 type Conf = [(APIKey, Account)]
 
 data Customer = Customer
-  { account :: Account,
-    apiKey :: APIKey,
-    mail :: Maybe Text,
+  { account  :: Account,
+    apiKey   :: APIKey,
+    mail     :: Maybe Text,
     fullname :: Maybe Text,
     cPicture :: Maybe Text
   }
@@ -206,14 +189,14 @@ instance ToMarkup Homepage where
           H.span "Picture in Local storage: "
           H.img ! HA.id "user-pic" ! HA.alt "A pic"
           H.script
-            [r| 
+            [r|
             var img = document.getElementById('user-pic');
             img.src = localStorage.getItem('picture');
            |]
 
 data Err = Err
   { errTitle :: Text,
-    errMsg :: Text
+    errMsg   :: Text
   }
 
 instance ToMarkup Err where
@@ -237,10 +220,25 @@ instance FromJSON LoginForm
 data RegistrationForm = RegistrationForm
   { username :: Text,
     password :: Text,
-    email :: Text
+    email    :: Text
   }
   deriving (Eq, Show, Generic)
 
 instance ToJSON RegistrationForm
 
 instance FromJSON RegistrationForm
+
+
+data ContactInfo = ContactInfo {
+  username    :: Text,
+  firstName   :: Text,
+  lastName    :: Text,
+  password    :: Text,
+  email       :: Text,
+  mobilePhone :: Text,
+  homePhone   :: Text,
+  workPhone   :: Text
+} deriving (Eq, Show, Generic)
+instance ToJSON ContactInfo
+
+instance FromJSON ContactInfo

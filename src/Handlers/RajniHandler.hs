@@ -1,14 +1,14 @@
 module Handlers.RajniHandler where
 
-import API.RajniApi (RajniApi)
-import AppM
-import ClassyPrelude
-import Data.List ((!!))
-import Err
-import Servant
+import           API.RajniApi        (RajniApi)
+import           AppM
+import           ClassyPrelude
+import           Data.List           ((!!))
+import           Err
+import           Servant
 import qualified Servant.Auth.Server as SAS
-import qualified System.Random as Random
-import Types
+import qualified System.Random       as Random
+import           Types
 
 chuckNorrisQuote :: SAS.AuthResult UserData -> AppM String
 chuckNorrisQuote (SAS.Authenticated _user) = do
@@ -45,7 +45,7 @@ rQs =
     "Ketta payyan saar inda Kaali",
     "Rajni tested +ve for Corona. Corona is now under quarantine",
     "Rajni once told a boy to keep quiet. He became Manmohan Singh",
-    "Idhu eppai irukku",
+    "Idhu eppadi irukku",
     "See-eeviduven",
     "Naan eppo varuven, epdi varuvennu yarukkum theriyaadu. Aana vara vendiya nerathula correcta vandhuduven",
     "Aandavan nallavangala sodhipaan aana kai vida maatan! Kettavangalukku alli alli kodupaan aana kadaisila kai vittuduvaan!",
