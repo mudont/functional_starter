@@ -158,6 +158,7 @@ viewForm form =
                       , text "Google Sign up/Sign in"
                       ]
                   ]
+        , a [ Route.href Route.ResetPassword ] [ text "Reset Password" ]
         , button [ class "btn btn-lg btn-primary pull-xs-right" ]
             [ text "Sign in" ]
         ]

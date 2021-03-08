@@ -3,10 +3,6 @@ module DB.Selda.CMModels where
 import ClassyPrelude
 import Data.Aeson (defaultOptions)
 import Data.Aeson.TH (deriveJSON)
--- import Data.Fixed (Pico)
--- import Data.Int (Int32, Int64)
--- import Data.Maybe (fromMaybe, isNothing)
--- import Data.Text (Text, pack)
 import Database.Selda hiding (Group)
 import Database.Selda.PostgreSQL ()
 
@@ -17,6 +13,8 @@ instance SqlType SiteType
 
 $(deriveJSON defaultOptions ''SiteType)
 
+
+-- User
 data User = User
   { id :: ID User,
     username :: Text,
@@ -35,9 +33,30 @@ data User = User
 instance SqlRow User
 
 user :: Table User
-user = table "auth_user" [#id :- autoPrimary]
+user = table "auth_user" 
+  [ #id :- autoPrimary
+  , #username :- unique
+  , #email :- unique
+  ]
 
 $(deriveJSON defaultOptions ''User)
+data ResetToken = ResetToken
+  { token :: Text,
+    user_id :: ID User,
+    expiration :: UTCTime
+  }
+  deriving (Show, Generic)
+
+instance SqlRow ResetToken
+
+resetToken :: Table ResetToken
+resetToken = table "reset_token"
+  [ #token :- primary
+  , #user_id :- foreignKey user #id
+  ]
+$(deriveJSON defaultOptions ''ResetToken)
+
+-- Player
 
 data Player = Player
   { id :: ID Player,
@@ -53,7 +72,10 @@ data Player = Player
 instance SqlRow Player
 
 player :: Table Player
-player = table "tennis_player" [#id :- autoPrimary]
+player = table "tennis_player" 
+  [ #id :- autoPrimary
+  , #user_id :- foreignKey user #id
+  ]
 
 $(deriveJSON defaultOptions ''Player)
 
@@ -67,7 +89,9 @@ data Group = Group
 instance SqlRow Group
 
 group :: Table Group
-group = table "auth_group" [#id :- autoPrimary]
+group = table "auth_group"
+  [ #id :- autoPrimary
+  ]
 
 $(deriveJSON defaultOptions ''Group)
 
@@ -83,7 +107,9 @@ data Org = Org
 
 instance SqlRow Org
 org :: Table Org
-org = table "tennis_organization" [#id :- autoPrimary]
+org = table "tennis_organization"
+  [ #id :- autoPrimary
+  ]
 
 $(deriveJSON defaultOptions ''Org)
 
@@ -103,7 +129,10 @@ data League = League
 
 instance SqlRow League
 league :: Table League
-league = table "tennis_league" [#id :- autoPrimary]
+league = table "tennis_league"
+  [ #id :- autoPrimary
+  , #org_id :- foreignKey org #id
+  ]
 
 $(deriveJSON defaultOptions ''League)
 
@@ -115,13 +144,17 @@ data Event = Event
     org_id :: ID Org,
     event_type :: Text,
     comment :: Text,
-    league_id :: ID League
+    league_id :: Maybe (ID League)
   }
   deriving (Show, Generic)
 
 instance SqlRow Event
 event :: Table Event
-event = table "tannis_event" [#id :- autoPrimary]
+event = table "tennis_event"
+  [ #id :- autoPrimary
+  , #org_id :- foreignKey org #id
+  , #league_id :- foreignKey league #id
+  ]
 
 $(deriveJSON defaultOptions ''Event)
 
@@ -139,6 +172,98 @@ data EventRsvp = EventRsvp
 
 instance SqlRow EventRsvp
 eventrsvp :: Table EventRsvp
-eventrsvp = table "tannis_eventrsvp" [#id :- autoPrimary]
+eventrsvp = table "tennis_eventrsvp"
+  [ #id :- autoPrimary
+  , #org_id :- foreignKey org #id
+  , #league_id :- foreignKey league #id
+  ]
 
 $(deriveJSON defaultOptions ''EventRsvp)
+
+-- Match
+data Match = Match
+  { id :: ID Match,
+    date :: UTCTime,
+    league_id :: ID League,
+    home_player1_id :: ID Player,
+    home_player2_id :: ID Player,
+    away_player1_id :: ID Player,
+    away_player2_id :: ID Player,
+    home_won :: Bool,
+    score:: Text,
+    comment:: Text,
+    round_num::Int,
+    match_num::Int
+  }
+  deriving (Show, Generic)
+
+instance SqlRow Match
+match :: Table Match
+match = table "tennis_match"
+  [ #id :- autoPrimary
+  , #league_id :- foreignKey league #id
+  , #home_player1_id :- foreignKey player #id
+  , #home_player2_id :- foreignKey player #id
+  , #away_player1_id :- foreignKey player #id
+  , #away_player2_id :- foreignKey player #id
+  ]
+
+$(deriveJSON defaultOptions ''Match)
+
+-- PPrefs
+
+data PPrefs = PPrefs
+  { id :: ID PPrefs,
+    player_id :: ID Player,
+    rating_adj :: Double,
+    p1_id:: ID Player,
+    p2_id:: ID Player, 
+    p3_id:: ID Player 
+  }
+  deriving (Show, Generic)
+
+instance SqlRow PPrefs
+pprefs :: Table PPrefs
+pprefs = table "tennis_pprefs"
+  [ #id :- autoPrimary
+  , #player_id :- foreignKey player #id
+  ]
+$(deriveJSON defaultOptions ''PPrefs)
+
+-- Registration
+
+data Registration = Registration
+  { id :: ID Registration,
+    league_id :: ID League,
+    player_id :: ID Player
+  }
+  deriving (Show, Generic)
+
+instance SqlRow Registration
+registration :: Table Registration
+registration = table "tennis_registration"
+  [ #id :- autoPrimary
+  , #league_id :- foreignKey league #id
+  , #player_id :- foreignKey player #id
+  ]
+$(deriveJSON defaultOptions ''Registration)
+
+
+-- Facility
+
+data Facility = Facility
+  { id :: ID Facility,
+    name :: Text,
+    abbrev :: Maybe Text,
+    phone :: Maybe Text,
+    address :: Maybe Text,
+    map_url :: Maybe Text
+  }
+  deriving (Show, Generic)
+
+instance SqlRow Facility
+facility :: Table Facility
+facility = table "tennis_facility"
+  [ #id :- autoPrimary
+  ]
+$(deriveJSON defaultOptions ''Facility)

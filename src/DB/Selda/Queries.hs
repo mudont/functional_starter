@@ -4,12 +4,26 @@ import           ClassyPrelude             hiding (group, id)
 import           DB.Selda.CMModels
 import qualified DB.Selda.CMModels         as CMM
 import           Data.Fixed                (HasResolution (resolution), Pico)
+import           Data.String.Conv          (toS)
 import           Data.Time
 import           Database.Selda            hiding (Group)
 import           Database.Selda.Backend
 import           Database.Selda.PostgreSQL (PG)
-import           Types
-import           Util.Crypto               (makeDjangoPassword)
+import           Types                     (ContactInfo (email, firstName, homePhone, lastName, mobilePhone, password, username, workPhone))
+import           Util.Crypto               (genRandomBS, getRandTxt,
+                                            makeDjangoPassword)
+
+-- CREATE TABLES
+initDatabase :: SeldaM PG ()
+initDatabase  = do
+  tryCreateTable org
+  tryCreateTable league
+  tryCreateTable user
+  tryCreateTable group
+  tryCreateTable player
+  tryCreateTable event
+  tryCreateTable eventrsvp
+  tryCreateTable resetToken
 
 mkUTCTime ::
   (Integer, Int, Int) ->
@@ -34,6 +48,13 @@ getUserByEmail email = do
   u <- select user
   restrict (u ! #email .== literal (Just email))
   pure u
+
+insertResetTokenQ :: Text -> ID User -> SeldaM PG (ID ResetToken)
+insertResetTokenQ token uid = do
+  currTime <- liftIO getCurrentTime
+  let oneDay = 24 * 60 * 60
+  let ts = addUTCTime oneDay currTime
+  insertWithPK resetToken [ResetToken token uid ts]
 
 insertUserQ :: User -> SeldaM PG (ID User)
 insertUserQ u =
@@ -62,6 +83,9 @@ insertUserPlayer :: SeldaConnection PG -> User -> IO (ID User)
 insertUserPlayer conn u =
   runSeldaT (transaction $ insertUserPlayerQ u) conn
 
+
+
+
 allUsers :: Query s (Row s User)
 allUsers = select user
 
@@ -83,15 +107,25 @@ userInfo thisUser = do
   restrict (u ! #username .== literal thisUser)
   return (u :*: p)
 
+maybeHash :: Maybe Text -> IO (Maybe Text )
+maybeHash mp = do
+  case mp of
+    Nothing -> return Nothing
+    Just p ->  do
+      h <- makeDjangoPassword p
+      return $ Just h
+
 updateUserInfo :: ContactInfo -> SeldaM PG ()
 updateUserInfo ci = do
-  hash <- liftIO $ makeDjangoPassword (password (ci::ContactInfo))
+  let mpswd = password (ci::ContactInfo)
+  hash <- liftIO $ maybeHash mpswd
+
   update_ user (\u -> u ! #username .== literal (username (ci::ContactInfo)) )
                (\u -> u `with` [
                  #first_name := literal (firstName ci),
                  #last_name := literal (lastName ci),
                  #email := literal (Just $ email (ci::ContactInfo)),
-                 #password := literal hash
+                 #password := maybe (u ! #password) literal hash
                ])
 updatePlayerInfo :: ContactInfo -> SeldaM PG ()
 updatePlayerInfo ci = do
@@ -108,22 +142,25 @@ updateProfile ci = do
     updateUserInfo ci
     updatePlayerInfo ci
 
--- Below is just playing around.
--- can be deleted
+-- PASSWORD RESET
 
-allUsersPlayers' :: Query s (Row s User, Row s Player)
-allUsersPlayers' = do
+createResetSecret :: Text -> SeldaM PG (Maybe Text)
+createResetSecret email = do
+  mu <- query $ getUserByEmail email
+  case mu of
+    [u] -> do
+      tokenBs <- liftIO  genRandomBS
+      let token = toS tokenBs
+      insertResetTokenQ (toS token) (id (u::User))
+      return $ Just token
+    [] -> return Nothing
+
+
+getUserFromResetToken :: Text -> Query s (Row s User)
+getUserFromResetToken token = do
+  t <- select resetToken
   u <- select user
-  p <- select player
-  restrict (u ! #id .== p ! #user_id)
-  return (u, p)
+  restrict (t ! #user_id .== u ! #id )
+  restrict (t ! #token .== literal token)
+  pure u
 
-aUP' :: SeldaConnection PG -> IO [User :*: Player]
-aUP' conn = do
-  res::[User :*: Player] <- runSeldaT (query allUsersPlayers ) conn
-  print res
-  case res of
-    [u :*: _p] -> print (first_name (u::User))
-    _          -> print (23.33 :: Double)
-  -- let u = fst res
-  return res

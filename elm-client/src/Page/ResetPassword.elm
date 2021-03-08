@@ -1,4 +1,4 @@
-module Page.Register exposing (Model, Msg, init, subscriptions, toSession, update, view)
+module Page.ResetPassword exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Api exposing (Cred)
 import Browser.Navigation as Nav
@@ -12,7 +12,7 @@ import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
 import Viewer exposing (Viewer)
-
+import Email exposing (..)
 
 
 -- MODEL
@@ -20,33 +20,28 @@ import Viewer exposing (Viewer)
 
 type alias Model =
     { session : Session
-    , problems : List Problem
+    , results : List ResetResult
     , form : Form
     }
 
 
 type alias Form =
     { email : String
-    , username : String
-    , password : String
-    , password2 : String
     }
 
 
-type Problem
+type ResetResult
     = InvalidEntry ValidatedField String
     | ServerError String
+    | OK String
 
 
 init : Session -> ( Model, Cmd msg )
 init session =
     ( { session = session
-      , problems = []
+      , results = []
       , form =
             { email = ""
-            , username = ""
-            , password = ""
-            , password2 = ""
             }
       }
     , Cmd.none
@@ -59,7 +54,7 @@ init session =
 
 view : Model -> { title : String, content : Html Msg }
 view model =
-    { title = "Register"
+    { title = "Reset Password"
     , content =
         div [ class "cred-page" ]
             [ div [ class "container page" ]
@@ -71,7 +66,7 @@ view model =
                                 [ text "Have an account?" ]
                             ]
                         , ul [ class "error-messages" ]
-                            (List.map viewProblem model.problems)
+                            (List.map viewProblem model.results)
                         , viewForm model.form
                         ]
                     ]
@@ -86,55 +81,28 @@ viewForm form =
         [ fieldset [ class "form-group" ]
             [ input
                 [ class "form-control form-control-lg"
-                , placeholder "Username"
-                , onInput EnteredUsername
-                , value form.username
-                ]
-                []
-            ]
-        , fieldset [ class "form-group" ]
-            [ input
-                [ class "form-control form-control-lg"
                 , placeholder "Email"
                 , onInput EnteredEmail
                 , value form.email
                 ]
                 []
             ]
-        , fieldset [ class "form-group" ]
-            [ input
-                [ class "form-control form-control-lg"
-                , type_ "password"
-                , placeholder "Password"
-                , onInput EnteredPassword
-                , value form.password
-                ]
-                []
-            ]
-        , fieldset [ class "form-group" ]
-            [ input
-                [ class "form-control form-control-lg"
-                , type_ "password"
-                , placeholder "Password Again"
-                , onInput EnteredPassword2
-                , value form.password2
-                ]
-                []
-            ]
         , button [ class "btn btn-lg btn-primary pull-xs-right" ]
-            [ text "Sign up" ]
+            [ text "Reset Password" ]
         ]
 
 
-viewProblem : Problem -> Html msg
-viewProblem problem =
+viewProblem : ResetResult -> Html msg
+viewProblem result =
     let
         errorMessage =
-            case problem of
+            case result of
                 InvalidEntry _ str ->
                     str
 
                 ServerError str ->
+                    str
+                OK str ->
                     str
     in
     li [] [ text errorMessage ]
@@ -147,10 +115,7 @@ viewProblem problem =
 type Msg
     = SubmittedForm
     | EnteredEmail String
-    | EnteredUsername String
-    | EnteredPassword String
-    | EnteredPassword2 String
-    | CompletedRegister (Result Http.Error Viewer)
+    | CompletedReset (Result Http.Error String)
     | GotSession Session
 
 
@@ -160,40 +125,31 @@ update msg model =
         SubmittedForm ->
             case validate model.form of
                 Ok validForm ->
-                    ( { model | problems = [] }
-                    ,  register validForm
+                    ( { model | results = [] }
+                    ,  resetPassword validForm
                     )
 
                 Err problems ->
-                    ( { model | problems = problems }
+                    ( { model | results = problems }
                     , Cmd.none
                     )
-
-        EnteredUsername username ->
-            updateForm (\form -> { form | username = username }) model
 
         EnteredEmail email ->
             updateForm (\form -> { form | email = email }) model
 
-        EnteredPassword password ->
-            updateForm (\form -> { form | password = password }) model
-
-        EnteredPassword2 password ->
-            updateForm (\form -> { form | password2 = password }) model
-
-        CompletedRegister (Err error) ->
+        CompletedReset (Err error) ->
             let
                 serverErrors =
                     Api.decodeErrors error
                         |> List.map ServerError
             in
-            ( { model | problems = List.append model.problems serverErrors }
+            ( { model | results = List.append model.results serverErrors }
             , Cmd.none
             )
 
-        CompletedRegister (Ok viewer) ->
-            ( model
-            , Viewer.store viewer
+        CompletedReset (Ok str) ->
+            ( { model | results = List.append model.results [OK str] }
+            , Cmd.none
             )
 
         GotSession session ->
@@ -242,24 +198,18 @@ type TrimmedForm
 {-| When adding a variant here, add it to `fieldsToValidate` too!
 -}
 type ValidatedField
-    = Username
-    | Email
-    | Password
-    | Password2
+    = Email
 
 
 fieldsToValidate : List ValidatedField
 fieldsToValidate =
-    [ Username
-    , Email
-    , Password
-    , Password2
+    [ Email
     ]
 
 
 {-| Trim the form and validate its fields. If there are problems, report them!
 -}
-validate : Form -> Result (List Problem) TrimmedForm
+validate : Form -> Result (List ResetResult) TrimmedForm
 validate form =
     let
         trimmedForm =
@@ -273,43 +223,13 @@ validate form =
             Err problems
 
 
-validateField : TrimmedForm -> ValidatedField -> List Problem
+validateField : TrimmedForm -> ValidatedField -> List ResetResult
 validateField (Trimmed form) field =
     List.map (InvalidEntry field) <|
         case field of
-            Username ->
-                if String.isEmpty form.username then
-                    [ "username can't be blank." ]
-
-                else
-                    []
-
             Email ->
                 if String.isEmpty form.email then
                     [ "email can't be blank." ]
-
-                else
-                    []
-
-            Password ->
-                if String.isEmpty form.password then
-                    [ "password can't be blank." ]
-
-                else if String.length form.password < Viewer.minPasswordChars then
-                    [ "password must be at least " ++ String.fromInt Viewer.minPasswordChars ++ " characters long." ]
-
-                else
-                    []
-
-            Password2 ->
-                if String.isEmpty form.password2 then
-                    [ "password2 can't be blank." ]
-
-                else if String.length form.password2 < Viewer.minPasswordChars then
-                    [ "password2 must be at least " ++ String.fromInt Viewer.minPasswordChars ++ " characters long." ]
-
-                else if form.password2 /= form.password then
-                    [ "Passowrds differ" ]
 
                 else
                     []
@@ -321,10 +241,7 @@ Instead, trim only on submit.
 trimFields : Form -> TrimmedForm
 trimFields form =
     Trimmed
-        { username = String.trim form.username
-        , email = String.trim form.email
-        , password = String.trim form.password
-        , password2 = String.trim form.password2
+        { email = String.trim form.email
         }
 
 
@@ -332,17 +249,15 @@ trimFields form =
 -- HTTP
 
 
-register : TrimmedForm -> Cmd Msg -- Viewer
-register (Trimmed form) =
+resetPassword : TrimmedForm -> Cmd Msg -- Viewer
+resetPassword (Trimmed form) =
     let
         user =
             Encode.object
-                [ ( "username", Encode.string form.username )
-                , ( "email", Encode.string form.email )
-                , ( "password", Encode.string form.password )
+                [ ( "email", Encode.string form.email )
                 ]
 
         body =
             Http.jsonBody user
     in
-    Api.register body Viewer.decoder CompletedRegister
+    (Api.resetPassword form.email) string CompletedReset

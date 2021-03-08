@@ -9,7 +9,7 @@ import Html exposing (Html, button, div, fieldset, h1, input, li, text, textarea
 import Html.Attributes exposing (attribute, class, placeholder, type_, value)
 import Html.Events exposing (onInput, onSubmit)
 import Http
-import Json.Decode as Decode exposing (Decoder, decodeString, field, list, string)
+import Json.Decode as Decode exposing (Decoder, decodeString, field, list, string, succeed)
 import Json.Decode.Pipeline exposing (hardcoded, required)
 import Json.Encode as Encode
 import Loading
@@ -18,7 +18,7 @@ import Profile exposing (Profile)
 import Route
 import Session exposing (Session)
 import Task
-import Username as Username exposing (Username)
+import Username as Username exposing (Username, dummyUser)
 import Viewer exposing (Viewer)
 
 
@@ -34,11 +34,15 @@ type alias Model =
 
 
 type alias Form =
-    { avatar : String
-    , bio : String
-    , email : String
+    { email : String
+    , firstName : String
+    , lastName : String
     , username : String
+    , mobilePhone : String
+    , homePhone : String
+    , workPhone : String
     , password : String
+    , password2 : String
     }
 
 
@@ -56,25 +60,38 @@ type Problem
 
 init : Session -> ( Model, Cmd Msg )
 init session =
-    ( { session = session
+    let mcr = Session.cred session
+        user = case mcr of
+            Nothing -> dummyUser
+            Just cr -> Api.username cr
+    in ( { session = session
       , problems = []
       , status = Loading
       }
     , Cmd.batch
-        [ Api.get Endpoint.user (Session.cred session) (Decode.field "user" formDecoder) CompletedFormLoad
+
+        [ Api.get (Endpoint.profile user) (Session.cred session) formDecoder CompletedFormLoad
         , Task.perform (\_ -> PassedSlowLoadThreshold) Loading.slowThreshold
         ]
+        --[ Api.get Endpoint.user (Session.cred session) (Decode.field "user" formDecoder)
+        --    |> Http.send CompletedFormLoad
+        --, Task.perform (\_ -> PassedSlowLoadThreshold) Loading.slowThreshold
+        --]
     )
 
 
 formDecoder : Decoder Form
 formDecoder =
     Decode.succeed Form
-        |> required "image" (Decode.map (Maybe.withDefault "") (Decode.nullable Decode.string))
-        |> required "bio" (Decode.map (Maybe.withDefault "") (Decode.nullable Decode.string))
         |> required "email" Decode.string
+        |> required "firstName" Decode.string
+        |> required "lastName" Decode.string
         |> required "username" Decode.string
-        |> hardcoded ""
+        |> required "mobilePhone" Decode.string
+        |> required "homePhone" Decode.string
+        |> required "workPhone" Decode.string
+        |> hardcoded "" -- Password
+        |> hardcoded "" -- Password2
 
 
 {-| A form that has been validated. Only the `edit` function uses this. Its
@@ -95,7 +112,7 @@ type ValidForm
 
 view : Model -> { title : String, content : Html Msg }
 view model =
-    { title = "Settings"
+    { title = "Profile"
     , content =
         case Session.cred model.session of
             Just cred ->
@@ -103,7 +120,7 @@ view model =
                     [ div [ class "container page" ]
                         [ div [ class "row" ]
                             [ div [ class "col-md-6 offset-md-3 col-xs-12" ] <|
-                                [ h1 [ class "text-xs-center" ] [ text "Your Settings" ]
+                                [ h1 [ class "text-xs-center" ] [ text "Your Profile" ]
                                 , ul [ class "error-messages" ]
                                     (List.map viewProblem model.problems)
                                 , case model.status of
@@ -124,7 +141,7 @@ view model =
                     ]
 
             Nothing ->
-                text "Sign in to view your settings."
+                text "Sign in to view your profile."
     }
 
 
@@ -135,9 +152,27 @@ viewForm cred form =
             [ fieldset [ class "form-group" ]
                 [ input
                     [ class "form-control"
-                    , placeholder "URL of profile picture"
-                    , value form.avatar
-                    , onInput EnteredAvatar
+                    , placeholder "Email"
+                    , value form.email
+                    , onInput EnteredEmail
+                    ]
+                    []
+                ]
+            , fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control"
+                    , placeholder "First Name"
+                    , value form.firstName
+                    , onInput EnteredFirstName
+                    ]
+                    []
+                ]
+            , fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control"
+                    , placeholder "Last Name"
+                    , value form.lastName
+                    , onInput EnteredLastName
                     ]
                     []
                 ]
@@ -151,21 +186,29 @@ viewForm cred form =
                     []
                 ]
             , fieldset [ class "form-group" ]
-                [ textarea
+                [ input
                     [ class "form-control form-control-lg"
-                    , placeholder "Short bio about you"
-                    , attribute "rows" "8"
-                    , value form.bio
-                    , onInput EnteredBio
+                    , placeholder "Mobile Phone"
+                    , value form.mobilePhone
+                    , onInput EnteredMobilePhone
                     ]
                     []
                 ]
             , fieldset [ class "form-group" ]
                 [ input
                     [ class "form-control form-control-lg"
-                    , placeholder "Email"
-                    , value form.email
-                    , onInput EnteredEmail
+                    , placeholder "Home Phone"
+                    , value form.homePhone
+                    , onInput EnteredHomePhone
+                    ]
+                    []
+                ]
+            , fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control form-control-lg"
+                    , placeholder "Work Phone"
+                    , value form.workPhone
+                    , onInput EnteredWorkPhone
                     ]
                     []
                 ]
@@ -179,9 +222,19 @@ viewForm cred form =
                     ]
                     []
                 ]
+            , fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control form-control-lg"
+                    , type_ "password"
+                    , placeholder "Password again"
+                    , value form.password2
+                    , onInput EnteredPassword2
+                    ]
+                    []
+                ]
             , button
                 [ class "btn btn-lg btn-primary pull-xs-right" ]
-                [ text "Update Settings" ]
+                [ text "Update Profile" ]
             ]
         ]
 
@@ -209,10 +262,14 @@ type Msg
     | EnteredEmail String
     | EnteredUsername String
     | EnteredPassword String
-    | EnteredBio String
-    | EnteredAvatar String
+    | EnteredPassword2 String
+    | EnteredFirstName String
+    | EnteredLastName String
+    | EnteredMobilePhone String
+    | EnteredHomePhone String
+    | EnteredWorkPhone String
     | CompletedFormLoad (Result Http.Error Form)
-    | CompletedSave (Result Http.Error Viewer)
+    | CompletedSave (Result Http.Error String)
     | GotSession Session
     | PassedSlowLoadThreshold
 
@@ -251,11 +308,23 @@ update msg model =
         EnteredPassword password ->
             updateForm (\form -> { form | password = password }) model
 
-        EnteredBio bio ->
-            updateForm (\form -> { form | bio = bio }) model
+        EnteredPassword2 password2 ->
+            updateForm (\form -> { form | password2 = password2 }) model
 
-        EnteredAvatar avatar ->
-            updateForm (\form -> { form | avatar = avatar }) model
+        EnteredFirstName firstName ->
+            updateForm (\form -> { form | firstName = firstName }) model
+
+        EnteredLastName lastName ->
+            updateForm (\form -> { form | lastName = lastName }) model
+
+        EnteredMobilePhone mobilePhone ->
+            updateForm (\form -> { form | mobilePhone = mobilePhone }) model
+
+        EnteredHomePhone homePhone ->
+            updateForm (\form -> { form | homePhone = homePhone }) model
+
+        EnteredWorkPhone workPhone ->
+            updateForm (\form -> { form | workPhone = workPhone }) model
 
         CompletedSave (Err error) ->
             let
@@ -267,9 +336,9 @@ update msg model =
             , Cmd.none
             )
 
-        CompletedSave (Ok viewer) ->
-            ( model
-            , Viewer.store viewer
+        CompletedSave (str) ->
+            ( {model | problems = []}
+            , Cmd.none
             )
 
         GotSession session ->
@@ -298,7 +367,7 @@ updateForm transform model =
             ( { model | status = Loaded (transform form) }, Cmd.none )
 
         _ ->
-            ( model, Log.error "Bad Settings model Loaded status")
+            ( model, Log.error "Bad Profile model Loaded status")
 
 
 
@@ -339,6 +408,7 @@ type ValidatedField
     = Username
     | Email
     | Password
+    | Password2
 
 
 fieldsToValidate : List ValidatedField
@@ -346,6 +416,7 @@ fieldsToValidate =
     [ Username
     , Email
     , Password
+    , Password2
     ]
 
 
@@ -394,6 +465,13 @@ validateField (Trimmed form) field =
                 else
                     []
 
+            Password2 ->
+                if form.password /= form.password2 then
+                    [ "Both passwords must be same" ]
+
+                else
+                    []
+
 
 {-| Don't trim while the user is typing! That would be super annoying.
 Instead, trim only on submit.
@@ -401,11 +479,15 @@ Instead, trim only on submit.
 trimFields : Form -> TrimmedForm
 trimFields form =
     Trimmed
-        { avatar = String.trim form.avatar
-        , bio = String.trim form.bio
-        , email = String.trim form.email
+        { email = String.trim form.email
         , username = String.trim form.username
         , password = String.trim form.password
+        , password2 = String.trim form.password2
+        , firstName = String.trim form.firstName
+        , lastName = String.trim form.lastName
+        , mobilePhone = String.trim form.mobilePhone
+        , homePhone = String.trim form.homePhone
+        , workPhone = String.trim form.workPhone
         }
 
 
@@ -419,19 +501,14 @@ first.
 edit : Cred -> TrimmedForm -> Cmd Msg -- Http.Request Viewer
 edit cred (Trimmed form) =
     let
-        encodedAvatar =
-            case form.avatar of
-                "" ->
-                    Encode.null
-
-                avatar ->
-                    Encode.string avatar
-
         updates =
             [ ( "username", Encode.string form.username )
             , ( "email", Encode.string form.email )
-            , ( "bio", Encode.string form.bio )
-            , ( "image", encodedAvatar )
+            , ( "firstName", Encode.string form.firstName )
+            , ( "lastName", Encode.string form.lastName )
+            , ( "mobilePhone", Encode.string form.mobilePhone )
+            , ( "homePhone", Encode.string form.homePhone )
+            , ( "workPhone", Encode.string form.workPhone )
             ]
 
         encodedUser =
@@ -443,11 +520,9 @@ edit cred (Trimmed form) =
                     password ->
                         ( "password", Encode.string password ) :: updates
 
-        body =
-            Encode.object [ ( "user", encodedUser ) ]
-                |> Http.jsonBody
+        body = encodedUser |> Http.jsonBody
     in
-    Api.settings cred body Viewer.decoder CompletedSave
+    Api.profile cred body (succeed "") CompletedSave
 
 
 nothingIfEmpty : String -> Maybe String

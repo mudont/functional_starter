@@ -6,7 +6,8 @@ import           ClassyPrelude                             (Bool, ByteString,
                                                             Monad (return), Ord,
                                                             Semigroup ((<>)),
                                                             Show, String, Text,
-                                                            fromMaybe, ($))
+                                                            fromMaybe, ($),
+                                                            (++))
 import           Crypto.Random.AESCtr                      (AESRNG, makeSystem)
 import           Crypto.Random.API                         (CPRG, cprgGenBytes)
 import           Data.Aeson
@@ -233,7 +234,7 @@ data ContactInfo = ContactInfo {
   username    :: Text,
   firstName   :: Text,
   lastName    :: Text,
-  password    :: Text,
+  password    :: Maybe Text,
   email       :: Text,
   mobilePhone :: Text,
   homePhone   :: Text,
@@ -242,3 +243,4 @@ data ContactInfo = ContactInfo {
 instance ToJSON ContactInfo
 
 instance FromJSON ContactInfo
+

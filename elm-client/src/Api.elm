@@ -1,6 +1,6 @@
 port module Api exposing (
     Cred, addServerError, application, decodeErrors, delete, get, login, logout,
-    post, put, register, settings, storeCredWith, username, viewerChanges,
+    post, put, register, resetPassword, profile, storeCredWith, username, viewerChanges,
     sendWsMessage, wsMessageReceiver, googleLogin)
 
 {-| This module is responsible for communicating to the Conduit API.
@@ -15,12 +15,12 @@ import Browser
 import Browser.Navigation as Nav
 import Http exposing (Body, Error, Expect)
 import Http
-import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string)
+import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string, succeed)
 import Json.Decode.Pipeline as Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Url exposing (Url)
 import Username exposing (Username)
-
+import Email exposing (Email)
 
 
 -- CRED
@@ -52,7 +52,7 @@ username (Cred val _) =
 
 credHeader : Cred -> Http.Header
 credHeader (Cred _ str) =
-    Http.header "authorization" ("Token " ++ str)
+    Http.header "Authorization" ("Bearer " ++ str)
 
 
 {-| It's important that this is never exposed!
@@ -246,10 +246,13 @@ register : Http.Body -> Decoder (Cred -> a) -> (Result Error a -> msg) -> Cmd ms
 register body decoder toMsg =
     post Endpoint.register Nothing body (decoderFromCred decoder) toMsg
 
+resetPassword : String -> Decoder String -> (Result Error String -> msg) -> Cmd msg
+resetPassword email decoder toMsg =
+    get (Endpoint.resetPassword  email) Nothing  decoder toMsg
 
-settings : Cred -> Http.Body -> Decoder (Cred -> a) -> (Result Error a -> msg) -> Cmd msg
-settings cred body decoder toMsg =
-    put Endpoint.user cred body (decoderFromCred decoder) toMsg
+profile : Cred -> Http.Body -> Decoder a -> (Result Error a -> msg) -> Cmd msg
+profile cred body decoder toMsg =
+    put (Endpoint.profile (username cred)) cred body  decoder toMsg
 
 
 decoderFromCred : Decoder (Cred -> a) -> Decoder a

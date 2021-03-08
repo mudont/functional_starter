@@ -20,6 +20,7 @@ import Page.Login as Login
 import Page.NotFound as NotFound
 import Page.Profile as Profile
 import Page.Register as Register
+import Page.ResetPassword as ResetPassword
 import Page.Settings as Settings
 import Route exposing (Route)
 import Session exposing (Session)
@@ -37,6 +38,7 @@ type Model
     | Settings Settings.Model
     | Login Login.Model
     | Register Register.Model
+    | ResetPassword ResetPassword.Model
     | Profile Username Profile.Model
 
 
@@ -88,6 +90,9 @@ view model =
         Register register ->
             viewPage Page.Other GotRegisterMsg (Register.view register)
 
+        ResetPassword reset ->
+            viewPage Page.Other GotResetPasswordMsg (ResetPassword.view reset)
+
         Profile username profile ->
             viewPage (Page.Profile username) GotProfileMsg (Profile.view profile)
 
@@ -103,6 +108,7 @@ type Msg
     | GotSettingsMsg Settings.Msg
     | GotLoginMsg Login.Msg
     | GotRegisterMsg Register.Msg
+    | GotResetPasswordMsg ResetPassword.Msg
     | GotProfileMsg Profile.Msg
     | GotSession Session
 
@@ -127,6 +133,9 @@ toSession page =
 
         Register register ->
             Register.toSession register
+
+        ResetPassword reset ->
+            ResetPassword.toSession reset
 
         Profile _ profile ->
             Profile.toSession profile
@@ -162,6 +171,10 @@ changeRouteTo maybeRoute model =
         Just Route.Register ->
             Register.init session
                 |> updateWith Register GotRegisterMsg model
+
+        Just Route.ResetPassword ->
+            ResetPassword.init session
+                |> updateWith ResetPassword GotResetPasswordMsg model
 
         Just (Route.Profile username) ->
             Profile.init session username
@@ -219,6 +232,10 @@ update msg model =
             Register.update subMsg register
                 |> updateWith Register GotRegisterMsg model
 
+        ( GotResetPasswordMsg subMsg, ResetPassword reset ) ->
+            ResetPassword.update subMsg reset
+                |> updateWith ResetPassword GotResetPasswordMsg model
+
         ( GotHomeMsg subMsg, Home home ) ->
             Home.update subMsg home
                 |> updateWith Home GotHomeMsg model
@@ -269,6 +286,10 @@ subscriptions model =
 
         Register register ->
             Sub.map GotRegisterMsg (Register.subscriptions register)
+
+
+        ResetPassword reset ->
+            Sub.map GotResetPasswordMsg (ResetPassword.subscriptions reset)
 
         Profile _ profile ->
             Sub.map GotProfileMsg (Profile.subscriptions profile)

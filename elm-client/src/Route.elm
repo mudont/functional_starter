@@ -20,6 +20,7 @@ type Route
     | Login
     | Logout
     | Register
+    | ResetPassword
     | Settings
     | Profile Username
 
@@ -33,6 +34,7 @@ parser =
         , Parser.map Settings (s "settings")
         , Parser.map Profile (s "profile" </> Username.urlParser)
         , Parser.map Register (s "register")
+        , Parser.map ResetPassword (s "reset_password")
         ]
 
 
@@ -85,6 +87,9 @@ routeToPieces page =
 
         Register ->
             [ "register" ]
+
+        ResetPassword ->
+            [ "reset_password" ]
 
         Settings ->
             [ "settings" ]

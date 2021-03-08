@@ -2,49 +2,80 @@
 
 module Handlers.AuthHandler where
 
-import API.AuthApi
-import AppM
-import ClassyPrelude (Applicative (pure), ByteString, Either (Left, Right), Eq ((==)), IO, Int, IsSequence (drop, take), IsString (fromString), Map, Maybe (Just, Nothing), Num ((+), (-)), Ord, Show, Text, Utf8 (decodeUtf8, encodeUtf8), const, either, fromMaybe, length, show, swap, ($), (.), (<$>), (<>))
-import Control.Monad
-import Control.Monad.Except (MonadError (throwError), MonadIO (..))
-import Control.Monad.Trans.Reader (asks)
-import Crypto.Random.API (CPRG, cprgGenBytes)
-import DB.Selda.CMModels
-import qualified DB.Selda.Queries as Query
-import "base64-bytestring" Data.ByteString.Base64.URL (encode)
-import Data.IORef
-  ( IORef,
-    atomicModifyIORef',
-    readIORef,
-  )
-import Data.List (head)
-import qualified Data.List as List
-import qualified Data.Map as M
-import Data.String (String)
-import Data.Text.Lazy (fromStrict)
-import Err
-import Handlers.TennisHandler (checkPasswd, createUser, ensureDBUser)
-import Jose.Jwt
-  ( Jwt (..),
-    decodeClaims,
-  )
-import Protolude (print, putText, (&))
-import Protolude.Conv
-import Servant
-import Servant.Auth ()
-import qualified Servant.Auth.Server as SAS
-import Servant.Server ()
-import qualified System.Random as Random
-import Types
-import Util.Email (mail)
-import qualified Web.OIDC.Client as O
-
+import           API.AuthApi
+import           AppM
+import           ClassyPrelude                                  (Applicative (pure),
+                                                                 ByteString,
+                                                                 Either (Left, Right),
+                                                                 Eq ((==)), IO,
+                                                                 Int,
+                                                                 IsSequence (drop, take),
+                                                                 IsString (fromString),
+                                                                 Map,
+                                                                 Maybe (Just, Nothing),
+                                                                 Num ((+), (-)),
+                                                                 Ord, Show,
+                                                                 Text,
+                                                                 Utf8 (decodeUtf8, encodeUtf8),
+                                                                 const, either,
+                                                                 fromMaybe,
+                                                                 length, maybe,
+                                                                 show, swap,
+                                                                 ($), (.),
+                                                                 (<$>), (<>))
+import           Config
+import           Control.Monad
+import           Control.Monad.Except                           (MonadError (throwError),
+                                                                 MonadIO (..))
+import           Control.Monad.Trans.Reader                     (asks)
+import           Crypto.Random.API                              (CPRG,
+                                                                 cprgGenBytes)
+import           DB.Selda.CMModels
+import qualified DB.Selda.Queries                               as Query
+import           "base64-bytestring" Data.ByteString.Base64.URL (encode)
+import           Data.IORef                                     (IORef,
+                                                                 atomicModifyIORef',
+                                                                 readIORef)
+import           Data.List                                      (head)
+import qualified Data.List                                      as List
+import qualified Data.Map                                       as M
+import           Data.String                                    (String)
+import           Data.Text.Lazy                                 (fromStrict)
+import           Err
+import           Handlers.TennisHandler                         (checkPasswd,
+                                                                 createResetSecret,
+                                                                 createUser,
+                                                                 ensureDBUser,
+                                                                 getUserFromResetToken)
+import           Jose.Jwt                                       (Jwt (..),
+                                                                 decodeClaims)
+import           Protolude                                      (print, putText,
+                                                                 (&))
+import           Protolude.Conv
+import           Servant
+import           Servant.Auth                                   ()
+import qualified Servant.Auth.Server                            as SAS
+import           Servant.Server                                 ()
+import qualified System.Random                                  as Random
+import           Types                                          (AuthInfo (email, emailVerified, name, picture),
+                                                                 Customer (..),
+                                                                 LoginForm (password, username),
+                                                                 OIDCEnv (OIDCEnv, clientId, clientPassword, cprg, mgr, oidc, prov, redirectUri, ssm),
+                                                                 RegistrationForm (email, password, username),
+                                                                 UserData (..))
+import           Util.Crypto                                    (genRandomBS)
+import           Util.Email                                     (doResetEmail,
+                                                                 mail,
+                                                                 mailResetLink)
+import qualified Web.OIDC.Client                                as O
 authHandler :: SAS.CookieSettings -> SAS.JWTSettings -> ServerT AuthApi AppM
 authHandler cs jwts =
   handleLogin
     :<|> handleLoggedIn cs jwts
     :<|> handlePasswordLogin cs jwts
     :<|> handleRegistration cs jwts
+    :<|> handlePasswordReset cs jwts
+    :<|> handleResetLogin cs jwts
 
 redirects :: (StringConv s ByteString) => s -> AppM ()
 redirects url = throwError err302 {errHeaders = [("Location", toS url)]}
@@ -76,7 +107,7 @@ getStateBy ssm sid = liftIO $ do
   m <- M.lookup sid <$> readIORef ssm
   return $ case m of
     Just (st, nonce) -> (Just st, Just nonce)
-    _ -> (Nothing, Nothing)
+    _                -> (Nothing, Nothing)
 
 deleteState :: (MonadIO m, Ord k, Show k) => IORef (Map k a) -> k -> m ()
 deleteState ssm sid = do
@@ -169,7 +200,7 @@ acceptUser cs jwts user = do
   jwt <- liftIO $ SAS.makeJWT user jwts Nothing
   let accessToken = either (const ("" :: Text)) toS jwt
   putText $ "access-token: " <> accessToken
-  let user' = user {token = Just accessToken}
+  let user' = (user::UserData) {token = Just accessToken}
   mApplyCookies <- liftIO $ SAS.acceptLogin cs jwts user'
   case mApplyCookies of
     Nothing -> do
@@ -178,29 +209,6 @@ acceptUser cs jwts user = do
     Just applyCookies -> do
       putText "DBG mApplyCookies worked"
       return $ applyCookies user'
-
-genRandomBS :: IO ByteString
-genRandomBS = do
-  g <- Random.newStdGen
-  Random.randomRs (0, n) g & take 42 & fmap toChar & readable 0 & toS & return
-  where
-    n = length letters - 1
-    toChar i = letters List.!! i
-    letters = ['A' .. 'Z'] <> ['0' .. '9'] <> ['a' .. 'z']
-    readable :: Int -> String -> String
-    readable _ [] = []
-    readable i str =
-      let blocksize = case n of
-            0 -> 8
-            1 -> 4
-            2 -> 4
-            3 -> 4
-            _ -> 12
-          block = take blocksize str
-          rest = drop blocksize str
-       in if List.null rest
-            then str
-            else block <> "-" <> readable (i + 1) rest
 
 customerFromAuthInfo :: AuthInfo -> IO Customer
 customerFromAuthInfo authinfo = do
@@ -262,5 +270,33 @@ handleOIDCLogin authInfo = do
           image = toS $ fromMaybe "" (cPicture c),
           token = Nothing
         }
+
+-- PASSWORD RESET
+handlePasswordReset ::
+  SAS.CookieSettings ->
+  SAS.JWTSettings ->
+  Maybe Text ->
+  AppM Text
+handlePasswordReset cs jwt memail = do
+  liftIO $ print $ "\n+++ !!!! ++++ handlePassword Reset\n" <> show memail
+  case memail of
+    Nothing -> notFound "No email param provided"
+    Just email  -> do
+      appCfg <- asks cfg
+      mtoken <- createResetSecret  email
+      liftIO $ doResetEmail (website appCfg) mtoken email
+      return $ "An email has been sent to " <> email <> ". If you can't find it, please check your Spam folder"
+
+
+handleResetLogin ::
+  SAS.CookieSettings ->
+  SAS.JWTSettings ->
+  Text ->
+  AppM (Headers '[Header "Set-Cookie" SAS.SetCookie, Header "Set-Cookie" SAS.SetCookie] UserData)
+handleResetLogin cs jwt secret = do
+  mu <- getUserFromResetToken secret
+  case mu of
+    Nothing -> forbidden "Invalid Reset Token"
+    Just u -> acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" "" Nothing Nothing
 
 --

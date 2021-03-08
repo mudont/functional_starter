@@ -56,6 +56,10 @@ default-extensions:
   - TypeFamilies
   - TypeFamilyDependencies
   - TypeOperators
+  # Use UndecidableInstances selectively. Not sure if it is dangerous,
+  # but seems to relax typechecking in a way you don't always want
+  # https://www.reddit.com/r/haskell/comments/5zjwym/when_is_undecidableinstances_okay_to_use/
+  # - UndecidableInstances
 
 dependencies:
   - aeson
@@ -153,10 +157,6 @@ dependencies:
   - warp >= 3.2
   - websockets
 _exe-defs: &exe-defaults
-  source-dirs:
-    - app
-    - src
-    - oneOff
   ghc-options:
     - -threaded
     - -rtsopts
@@ -177,6 +177,7 @@ library:
     - Client
     - CmdArgs
     - Config
+    - Const
     - DB.Opaleye.Database
     - DB.Opaleye.User
     - DB.Selda.CMModels
@@ -223,7 +224,6 @@ tests:
     main: Spec.hs
     source-dirs:
       - test
-      - src
     dependencies:
       - functional-starter
       - hspec

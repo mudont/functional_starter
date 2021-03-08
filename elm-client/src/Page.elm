@@ -26,6 +26,7 @@ type Page
     | Home
     | Login
     | Register
+    | ResetPassword
     | Settings
     | Profile Username
 
@@ -95,6 +96,7 @@ viewMenu page maybeViewer =
         Nothing ->
             [ linkTo Route.Login [ text "Sign in" ]
             , linkTo Route.Register [ text "Sign up" ]
+            , linkTo Route.ResetPassword [ text "Reset Password" ]
             ]
 
 
@@ -128,6 +130,9 @@ isActive page route =
             True
 
         ( Register, Route.Register ) ->
+            True
+
+        ( ResetPassword, Route.ResetPassword ) ->
             True
 
         ( Settings, Route.Settings ) ->

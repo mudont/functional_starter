@@ -59,7 +59,7 @@ playersHelper q _user = do
         (username (u::User))
         (first_name (u::User))
         (last_name (u::User))
-        (password (u::User))
+        (Just $ password (u::User))
         (fromMaybe "" $ email (u::User))
         (fromMaybe "" $ mobile_phone (p::Player))
         (fromMaybe "" $ home_phone (p::Player))
@@ -78,15 +78,15 @@ player (SAS.Authenticated user) un = do
     _   -> notFound $ "No user " <> un
 player _ _ = forbidden " Pelase Login to see Contact info"
 
-updateProfile :: SAS.AuthResult UserData -> ContactInfo -> AppM ()
-updateProfile (SAS.Authenticated _user) ci = do
+updateProfile :: SAS.AuthResult UserData -> Text -> ContactInfo -> AppM ()
+updateProfile (SAS.Authenticated _user) uname ci = do
   conn <- asks dbConn
   liftIO $ print "!!!!!!!!!!!! updateProfile  !!!!!!!!!!!!!!!!"
   liftIO $ print ci
   liftIO $ runSeldaT (Query.updateProfile ci) conn
   return ()
 
-updateProfile _ _ = forbidden " Pelase Login to update Profile"
+updateProfile _ _ _ = forbidden " Pelase Login to update Profile"
 -- usersPlayers :: AppM [UserPlayer]
 --usersPlayers = dbQuery Query.allUsersPlayers
 
@@ -115,6 +115,19 @@ checkPasswd username pswd = do
   pure $ case mu of
     Nothing -> Nothing
     Just u -> if validatePassword pswd (password (u :: User)) then Just u else Nothing
+
+createResetSecret :: Text -> AppM (Maybe Text)
+createResetSecret email = do
+  conn <- asks dbConn
+  liftIO $ runSeldaT (Query.createResetSecret email) conn
+
+
+getUserFromResetToken :: Text -> AppM (Maybe User)
+getUserFromResetToken resetToken = do
+  mu <- dbQuery $ Query.getUserFromResetToken resetToken
+  case mu of
+    []  -> return Nothing
+    [u] -> return $ Just u
 
 createUser :: Text -> Maybe Text -> Text -> AppM (Either Text User)
 createUser username pswd email = do

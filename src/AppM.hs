@@ -1,16 +1,16 @@
 module AppM where
 
-import ClassyPrelude
-import Config
-import Database.Selda.Backend (SeldaConnection)
-import Database.Selda.PostgreSQL
-import Servant as S
-import Types
+import           ClassyPrelude
+import           Config
+import           Database.Selda.Backend    (SeldaConnection)
+import           Database.Selda.PostgreSQL
+import           Servant                   as S
+import           Types
 
 data AppState = AppState
-  { cfg :: AppConfig,
+  { cfg     :: AppConfig,
     oidcEnv :: OIDCEnv,
-    dbConn :: SeldaConnection PG
+    dbConn  :: SeldaConnection PG
   }
 
 type AppM = ReaderT AppState S.Handler

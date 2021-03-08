@@ -1,9 +1,10 @@
 module Api.Endpoint exposing (Endpoint, follow, login, googleLogin, register,
-                              profiles, request, user, users)
+                              resetPassword, profiles, request, profile, users)
 
 import Http
-import Url.Builder exposing (QueryParameter)
+import Url.Builder exposing(..)
 import Username exposing (Username)
+import Email exposing (Email, toString)
 
 
 {-| Http.request, except it takes an Endpoint instead of a Url.
@@ -75,10 +76,18 @@ register : Endpoint
 register =
     Url.Builder.crossOrigin severUrl ["register"] [] |> Endpoint -- url [ "register" ] []
 
+resetPassword : String -> Endpoint
+resetPassword email =
+    Url.Builder.crossOrigin severUrl ["reset_password"] [string "email"  email] |> Endpoint
 
-user : Endpoint
-user =
-    url [ "user" ] []
+profile : Username -> Endpoint
+profile username =
+    url [ "profile", Username.toString username ] []
+
+--
+--user : Endpoint
+--user =
+--    url [ "user" ] []
 
 
 users : Endpoint
