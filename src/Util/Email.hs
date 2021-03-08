@@ -41,11 +41,11 @@ doResetEmail website mtoken address = do
   maybe (mailRejectReset address) (mailResetLink website address) mtoken
 
 mailResetLink :: Text -> Text -> Text -> IO ()
-mailResetLink website address mtoken  = do
+mailResetLink website address token  = do
   let subject = "CM Hackers Password Reset link"
   let h = fromStrict $ toS $ "<a href=" <> website <> (toS ("/" <>
-          Const.loginWithResetSecretUrlFrag  <>
-          "> Click to Login and Reset password</a>")::Text)
+          Const.loginWithResetSecretUrlFrag  <> "/") <>  token <>
+          "> Click to Login and Reset password</a>")
   renderSendMail $ simpleMail from (makeRecipient address) cc bcc subject [Mime.htmlPart h]
 
 

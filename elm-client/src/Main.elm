@@ -219,7 +219,7 @@ update msg model =
 
         ( ChangedUrl url, _ ) ->
             let (m, cmd) = changeRouteTo (Route.fromUrl url) model
-            in (m, Cmd.batch [Debug.log "ChangedUrl" cmd, Log.dbg <| "Url changed to " ++ Url.toString url])
+            in (m, Cmd.batch [cmd, Log.dbg <| "Url changed to " ++ Url.toString url])
         ( GotSettingsMsg subMsg, Settings settings ) ->
             Settings.update subMsg settings
                 |> updateWith Settings GotSettingsMsg model

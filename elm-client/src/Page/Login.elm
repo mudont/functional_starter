@@ -95,6 +95,10 @@ view model =
                             [ a [ Route.href Route.Register ]
                                 [ text "Need an account?" ]
                             ]
+                        , p [ class "text-xs-center" ]
+                            [ a [ Route.href Route.ResetPassword ]
+                                [ text "Reset Password" ]
+                            ]
                         , ul [ class "error-messages" ]
                             (List.map viewProblem model.problems)
                         , viewForm model.form
@@ -150,15 +154,14 @@ viewForm form =
                 ]
                 []
             ]
-        , Button.linkButton [ Button.light, Button.attrs [ href "/google"] ]
+        , Button.linkButton [ Button.outlineSuccess, Button.large, Button.attrs [ href "/google"] ]
                   [ div
                       [ class "left" ]
-                      [ img [ Asset.src googleLogo, height 25, width 25, style "margin" "0", alt "G" ] []
+                      [ img [ Asset.src googleLogo, height 25, width 25, alt "G" ] []
                       , text "  "
                       , text "Google Sign up/Sign in"
                       ]
                   ]
-        , a [ Route.href Route.ResetPassword ] [ text "Reset Password" ]
         , button [ class "btn btn-lg btn-primary pull-xs-right" ]
             [ text "Sign in" ]
         ]

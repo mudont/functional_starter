@@ -56,6 +56,7 @@ type Status
 type Problem
     = InvalidEntry ValidatedField String
     | ServerError String
+    | OK String
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -121,7 +122,7 @@ view model =
                         [ div [ class "row" ]
                             [ div [ class "col-md-6 offset-md-3 col-xs-12" ] <|
                                 [ h1 [ class "text-xs-center" ] [ text "Your Profile" ]
-                                , ul [ class "error-messages" ]
+                                , ul [  ]
                                     (List.map viewProblem model.problems)
                                 , case model.status of
                                     Loaded form ->
@@ -178,7 +179,7 @@ viewForm cred form =
                 ]
             , fieldset [ class "form-group" ]
                 [ input
-                    [ class "form-control form-control-lg"
+                    [ class "form-control"
                     , placeholder "Username"
                     , value form.username
                     , onInput EnteredUsername
@@ -187,7 +188,7 @@ viewForm cred form =
                 ]
             , fieldset [ class "form-group" ]
                 [ input
-                    [ class "form-control form-control-lg"
+                    [ class "form-control "
                     , placeholder "Mobile Phone"
                     , value form.mobilePhone
                     , onInput EnteredMobilePhone
@@ -196,7 +197,7 @@ viewForm cred form =
                 ]
             , fieldset [ class "form-group" ]
                 [ input
-                    [ class "form-control form-control-lg"
+                    [ class "form-control"
                     , placeholder "Home Phone"
                     , value form.homePhone
                     , onInput EnteredHomePhone
@@ -205,7 +206,7 @@ viewForm cred form =
                 ]
             , fieldset [ class "form-group" ]
                 [ input
-                    [ class "form-control form-control-lg"
+                    [ class "form-control"
                     , placeholder "Work Phone"
                     , value form.workPhone
                     , onInput EnteredWorkPhone
@@ -214,7 +215,7 @@ viewForm cred form =
                 ]
             , fieldset [ class "form-group" ]
                 [ input
-                    [ class "form-control form-control-lg"
+                    [ class "form-control"
                     , type_ "password"
                     , placeholder "Password"
                     , value form.password
@@ -224,7 +225,7 @@ viewForm cred form =
                 ]
             , fieldset [ class "form-group" ]
                 [ input
-                    [ class "form-control form-control-lg"
+                    [ class "form-control"
                     , type_ "password"
                     , placeholder "Password again"
                     , value form.password2
@@ -242,15 +243,16 @@ viewForm cred form =
 viewProblem : Problem -> Html msg
 viewProblem problem =
     let
-        errorMessage =
+        (cls, errorMessage) =
             case problem of
                 InvalidEntry _ message ->
-                    message
+                    ("error-messages", message)
 
                 ServerError message ->
-                    message
+                    ("error-messages", message)
+                OK message -> ("", message)
     in
-    li [] [ text errorMessage ]
+    li [class cls] [ text errorMessage ]
 
 
 
@@ -337,7 +339,7 @@ update msg model =
             )
 
         CompletedSave (str) ->
-            ( {model | problems = []}
+            ( {model | problems = [OK "Profile Saved"]}
             , Cmd.none
             )
 
