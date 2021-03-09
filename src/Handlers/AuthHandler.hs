@@ -20,8 +20,8 @@ import           ClassyPrelude                                  (Applicative (pu
                                                                  const, either,
                                                                  fromMaybe,
                                                                  length, maybe,
-                                                                 show, swap,
-                                                                 ($), (.),
+                                                                 putStrLn, show,
+                                                                 swap, ($), (.),
                                                                  (<$>), (<>))
 import           Config
 import           Control.Monad
@@ -158,9 +158,9 @@ handleLoggedIn cs jwts err mcode mstate = do
           authenticating.
         -}
         let (state :: O.State) = encodeUtf8 $ fromMaybe "" mstate
-        --let sesskeys = M.keys sessions
-        --putText "DBG"
-        -- putText $ show $ length sesskeys
+        let sesskeys = M.keys sessions
+        putText "DBG"
+        print sesskeys
         let sid = head $ M.keys $ M.filter (\(st, _) -> st == state) sessions
         putText $ sid <> " sid"
         let store = sessionStoreFromSession (cprg oidcenv) (ssm oidcenv) sid
@@ -294,9 +294,11 @@ handleResetLogin ::
   Text ->
   AppM (Headers '[Header "Set-Cookie" SAS.SetCookie, Header "Set-Cookie" SAS.SetCookie] UserData)
 handleResetLogin cs jwt secret = do
+  cfg <- asks cfg
+  let url = profileUrl cfg
   mu <- getUserFromResetToken secret
   case mu of
     Nothing -> forbidden "Invalid Reset Token"
-    Just u -> acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" "" Nothing Nothing
+    Just u -> acceptUser cs jwt $ UserData (username (u :: User)) "" "" "" "" (Just url) Nothing
 
 --

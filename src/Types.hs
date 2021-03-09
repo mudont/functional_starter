@@ -132,7 +132,7 @@ instance ToMarkup UserData where
                   email: '$email$'
                 }});
 
-                window.location='$fromMaybe "/index.html" redirectUrl$';
+                window.location='$fromMaybe "/" redirectUrl$';
                 |]
         )
 

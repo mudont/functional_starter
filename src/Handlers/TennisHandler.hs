@@ -124,6 +124,8 @@ createResetSecret email = do
 
 getUserFromResetToken :: Text -> AppM (Maybe User)
 getUserFromResetToken resetToken = do
+  conn <- asks dbConn
+  liftIO $ runSeldaT Query.cleanupResetTokens conn
   mu <- dbQuery $ Query.getUserFromResetToken resetToken
   case mu of
     []  -> return Nothing

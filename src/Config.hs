@@ -17,7 +17,8 @@ data AppConfig = AppConfig
     clientId       :: Text,
     clientPassword :: Text,
     jwkFile        :: Text,
-    website        :: Text
+    website        :: Text,
+    profileUrl     :: Text
   }
   deriving (Generic, Show)
 

@@ -1,14 +1,14 @@
 module DB.Models where
 
-import ClassyPrelude
-import Data.Aeson (defaultOptions)
-import Data.Aeson.TH (deriveJSON)
+import           ClassyPrelude
+import           Data.Aeson                (defaultOptions)
+import           Data.Aeson.TH             (deriveJSON)
 -- import Data.Fixed (Pico)
 -- import Data.Int (Int32, Int64)
 -- import Data.Maybe (fromMaybe, isNothing)
 -- import Data.Text (Text, pack)
-import Database.Selda hiding (Group)
-import Database.Selda.PostgreSQL ()
+import           Database.Selda            hiding (Group)
+import           Database.Selda.PostgreSQL ()
 
 data SiteType = Cricket | Tennis | Exchange | Other
   deriving (Show, Read, Bounded, Enum)
@@ -17,11 +17,12 @@ instance SqlType SiteType
 
 $(deriveJSON defaultOptions ''SiteType)
 
+-- COMMON TABLES
 data User = User
-  { id :: ID User,
-    username :: Text,
-    password :: Text,
-    email :: Maybe Text,
+  { id         :: ID User,
+    username   :: Text,
+    password   :: Text,
+    email      :: Maybe Text,
     created_at :: UTCTime,
     updated_at :: UTCTime
   }
@@ -35,13 +36,13 @@ user = table "user" [#id :- autoPrimary]
 $(deriveJSON defaultOptions ''User)
 
 data Site = Site
-  { id :: ID Site,
-    name :: Text,
-    owner :: ID User,
+  { id          :: ID Site,
+    name        :: Text,
+    owner       :: ID User,
     domain_name :: Maybe Text,
-    site_type :: SiteType,
-    created_at :: UTCTime,
-    updated_at :: UTCTime
+    site_type   :: SiteType,
+    created_at  :: UTCTime,
+    updated_at  :: UTCTime
   }
   deriving (Show, Generic)
 
@@ -53,18 +54,18 @@ site :: Table Site
 site = table "site" [#id :- primary]
 
 data Person = Person
-  { id :: ID Person,
-    user_id :: Maybe (ID User),
-    first_name :: Text,
-    middle_name :: Maybe Text,
-    last_name :: Text,
-    email :: Maybe Text,
-    phone :: Maybe Text,
-    login :: Text,
-    password :: Text,
-    is_staff :: Bool,
-    is_active :: Bool,
-    is_superuser :: Bool,
+  { id             :: ID Person,
+    user_id        :: Maybe (ID User),
+    first_name     :: Text,
+    middle_name    :: Maybe Text,
+    last_name      :: Text,
+    email          :: Maybe Text,
+    phone          :: Maybe Text,
+    login          :: Text,
+    password       :: Text,
+    is_staff       :: Bool,
+    is_active      :: Bool,
+    is_superuser   :: Bool,
     per_created_at :: UTCTime,
     per_updated_at :: UTCTime
   }
@@ -78,9 +79,9 @@ person = table "person" [#id :- autoPrimary]
 $(deriveJSON defaultOptions ''Person)
 
 data Group = Group
-  { id :: ID Group,
-    site_id :: ID Site,
-    name :: Text,
+  { id         :: ID Group,
+    site_id    :: ID Site,
+    name       :: Text,
     created_at :: UTCTime,
     updated_at :: UTCTime
   }
@@ -94,9 +95,9 @@ group :: Table Group
 group = table "group" [#id :- autoPrimary]
 
 data GroupMember = GroupMember
-  { id :: ID GroupMember,
-    person_id :: ID Person,
-    grp_id :: ID Group,
+  { id         :: ID GroupMember,
+    person_id  :: ID Person,
+    grp_id     :: ID Group,
     created_at :: UTCTime,
     updated_at :: UTCTime
   }
@@ -123,14 +124,14 @@ check_perm(obj_type, obj_id, org_id, user_id ):
     ).FirstOrDefault();
 -}
 data Permission = Permission
-  { id :: ID Permission,
-    site_id :: ID Site,
+  { id          :: ID Permission,
+    site_id     :: ID Site,
     object_type :: Text,
-    object_id :: Maybe Int,
-    user_id :: Maybe (ID User),
-    group_id :: Maybe (ID Group),
-    created_at :: UTCTime,
-    updated_at :: UTCTime
+    object_id   :: Maybe Int,
+    user_id     :: Maybe (ID User),
+    group_id    :: Maybe (ID Group),
+    created_at  :: UTCTime,
+    updated_at  :: UTCTime
   }
   deriving (Show, Generic)
 
@@ -143,10 +144,10 @@ permission = table "permission" [#id :- primary, (#object_type :+ #object_id) :-
 
 -- POLLS
 data Poll = Poll
-  { id :: ID Poll,
-    site_id :: ID Site,
-    date :: Day,
-    name :: Text,
+  { id             :: ID Poll,
+    site_id        :: ID Site,
+    date           :: Day,
+    name           :: Text,
     per_created_at :: UTCTime,
     per_updated_at :: UTCTime
   }
@@ -160,9 +161,9 @@ poll :: Table Poll
 poll = table "poll" [#id :- primary]
 
 data PollChoice = PollChoice
-  { id :: ID PollChoice,
-    poll_id :: ID Poll,
-    name :: Text,
+  { id             :: ID PollChoice,
+    poll_id        :: ID Poll,
+    name           :: Text,
     per_created_at :: UTCTime,
     per_updated_at :: UTCTime
   }
@@ -176,10 +177,10 @@ pollChoice :: Table PollChoice
 pollChoice = table "poll_choice" [#id :- primary]
 
 data PollVote = PollVote
-  { id :: ID PollVote,
-    poll_id :: ID Poll,
-    user_id :: ID User,
-    choice :: Text,
+  { id             :: ID PollVote,
+    poll_id        :: ID Poll,
+    user_id        :: ID User,
+    choice         :: Text,
     per_created_at :: UTCTime,
     per_updated_at :: UTCTime
   }
@@ -192,4 +193,7 @@ $(deriveJSON defaultOptions ''PollVote)
 pollVote :: Table PollVote
 pollVote = table "poll_vote" [#id :- primary]
 
--- TENNIS
+-- TENNIS TABLES
+-- POLL/EVENT TABLES
+-- EXCHANGE TABLES
+-- CRICKET TABLES

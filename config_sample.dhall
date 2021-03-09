@@ -15,4 +15,5 @@ in  { port
     , clientPassword = "5NOT_REALxoFAKE0mlq3pod_"
     , jwkFile = "jwk.dat"
     , website = "https://mariandrive.com"
+    , profileUrl = "#/settings"
     }

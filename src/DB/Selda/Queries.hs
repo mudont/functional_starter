@@ -155,6 +155,11 @@ createResetSecret email = do
       return $ Just token
     [] -> return Nothing
 
+cleanupResetTokens :: SeldaM PG ()
+cleanupResetTokens = do
+  currTime <- liftIO getCurrentTime
+  deleteFrom_ resetToken (\a -> a ! #expiration .< literal currTime)
+  return ()
 
 getUserFromResetToken :: Text -> Query s (Row s User)
 getUserFromResetToken token = do
